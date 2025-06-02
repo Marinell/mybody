@@ -47,6 +47,7 @@
               <a class="text-[#121317] text-sm font-medium leading-normal" href="#">Messages</a>
               <a class="text-[#121317] text-sm font-medium leading-normal" href="#">Notifications</a>
               <a class="text-[#121317] text-sm font-medium leading-normal" href="#">Jobs</a>
+              <button id="logoutButton" class="text-[#121317] text-sm font-medium leading-normal hover:text-[#607afb] ml-4">Logout</button>
             </div>
             <button
               class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 bg-[#f1f1f4] text-[#121317] gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5"
@@ -67,21 +68,24 @@
         </header>
         <div class="px-40 flex flex-1 justify-center py-5">
           <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+            <div id="profilePageMessage" class="text-center py-3 px-4 hidden text-white"></div>
             <div class="flex p-4 @container">
               <div class="flex w-full flex-col gap-4 items-center">
                 <div class="flex gap-4 flex-col items-center">
                   <div
-                    class="bg-center bg-no-repeat aspect-square bg-cover rounded-full min-h-32 w-32"
+                    id="profileImage" class="bg-center bg-no-repeat aspect-square bg-cover rounded-full min-h-32 w-32"
                     style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB4syA4D8e79b1WDL_WXPBd8YrVYGa69fP2_ZumepsPQRyjzTJu5Zu50mPx9vwca51BiSbrxwLXASeV1zjve2EuenvrrVv1tjBvLdwjPeuuOI9_7ApOQq_dXJcXDRATvIibNkYpZ-27iwKIQqUfUk5duowt81cfzeNul0t7zxbBhwgJ4oqL5KP2XPkJEOIe556MpNVgPQ44BOzPL1Y08NtFrcx1yhWP1X8S4aQ1l-LwxnDS-Z2lksIM0mA4PwZrng0UtEf32_Wdd2E");'
                   ></div>
                   <div class="flex flex-col items-center justify-center justify-center">
-                    <p class="text-[#121317] text-[22px] font-bold leading-tight tracking-[-0.015em] text-center">Sophia Carter</p>
-                    <p class="text-[#686d82] text-base font-normal leading-normal text-center">Certified Yoga Instructor</p>
-                    <p class="text-[#686d82] text-base font-normal leading-normal text-center">San Francisco, CA</p>
+                    <p class="text-[#121317] text-[22px] font-bold leading-tight tracking-[-0.015em] text-center" id="profileName">Loading...</p>
+                    <p class="text-[#686d82] text-base font-normal leading-normal text-center" id="profileProfession">Loading...</p>
+                    <p class="text-[#686d82] text-base font-normal leading-normal text-center" id="profileLocation"></p>
+                    <p class="text-[#686d82] text-sm font-normal leading-normal text-center mt-1">Email: <span id="profileEmail"></span></p>
+                    <p class="text-[#686d82] text-sm font-normal leading-normal text-center">Phone: <span id="profilePhoneNumber"></span></p>
                   </div>
                 </div>
                 <button
-                  class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#f1f1f4] text-[#121317] text-sm font-bold leading-normal tracking-[0.015em] w-full max-w-[480px] @[480px]:w-auto"
+                  id="contactButton" class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#f1f1f4] text-[#121317] text-sm font-bold leading-normal tracking-[0.015em] w-full max-w-[480px] @[480px]:w-auto"
                 >
                   <span class="truncate">Contact</span>
                 </button>
@@ -101,27 +105,10 @@
               </div>
             </div>
             <h2 class="text-[#121317] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">About</h2>
-            <p class="text-[#121317] text-base font-normal leading-normal pb-3 pt-1 px-4">
-              Sophia Carter is a certified yoga instructor with over 5 years of experience. She specializes in vinyasa and restorative yoga, helping clients achieve balance and
-              wellness through personalized sessions. Sophia's approach is holistic, focusing on both physical and mental well-being.
-            </p>
+            <p id="profileAboutText" class="text-[#121317] text-base font-normal leading-normal pb-3 pt-1 px-4">Loading about information...</p>
             <h2 class="text-[#121317] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Skills</h2>
-            <div class="flex gap-3 p-3 flex-wrap pr-4">
-              <div class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-[#f1f1f4] pl-4 pr-4">
-                <p class="text-[#121317] text-sm font-medium leading-normal">Vinyasa Yoga</p>
-              </div>
-              <div class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-[#f1f1f4] pl-4 pr-4">
-                <p class="text-[#121317] text-sm font-medium leading-normal">Restorative Yoga</p>
-              </div>
-              <div class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-[#f1f1f4] pl-4 pr-4">
-                <p class="text-[#121317] text-sm font-medium leading-normal">Meditation</p>
-              </div>
-              <div class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-[#f1f1f4] pl-4 pr-4">
-                <p class="text-[#121317] text-sm font-medium leading-normal">Mindfulness</p>
-              </div>
-              <div class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-[#f1f1f4] pl-4 pr-4">
-                <p class="text-[#121317] text-sm font-medium leading-normal">Stress Management</p>
-              </div>
+            <div id="profileSkillsContainer" class="flex gap-3 p-3 flex-wrap pr-4">
+                <!-- Skills will be loaded here by JavaScript -->
             </div>
             <h2 class="text-[#121317] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Experience</h2>
             <div class="grid grid-cols-[40px_1fr] gap-x-2 px-4">
@@ -170,9 +157,15 @@
                 <p class="text-[#686d82] text-base font-normal leading-normal">2016</p>
               </div>
             </div>
+            <h2 class="text-[#121317] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Social & Web Links</h2>
+            <div id="socialLinksContainer" class="flex flex-col gap-2 p-4">
+                <!-- Social links will be loaded here -->
+            </div>
           </div>
         </div>
       </div>
     </div>
+    <script src="../js/app.js"></script>
+    <script src="../js/professional_profile.js"></script>
   </body>
 </html>

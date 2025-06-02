@@ -153,3 +153,14 @@ function protectPage(allowedRoles = []) { // allowedRoles can be empty (just log
 // });
 
 console.log('app.js loaded');
+
+// Event listener for global logout button
+document.addEventListener('DOMContentLoaded', () => {
+    const logoutBtn = document.getElementById('logoutButton');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault(); // If it's a link, prevent navigation
+            logout();
+        });
+    }
+});
