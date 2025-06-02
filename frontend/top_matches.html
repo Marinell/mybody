@@ -46,6 +46,7 @@
               <a class="text-white text-sm font-medium leading-normal" href="#">Jobs</a>
               <a class="text-white text-sm font-medium leading-normal" href="#">Messages</a>
               <a class="text-white text-sm font-medium leading-normal" href="#">Notifications</a>
+              <button id="logoutButton" class="text-white text-sm font-medium leading-normal hover:text-[#8e99cc] ml-4">Logout</button>
             </div>
             <button
               class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 bg-[#21284a] text-white gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5"
@@ -69,94 +70,21 @@
             <div class="flex flex-wrap justify-between gap-3 p-4">
               <p class="text-white tracking-light text-[32px] font-bold leading-tight min-w-72">Top matches for your request</p>
             </div>
+            <div id="matchPageMessage" class="text-center py-3 px-4 hidden text-white"></div>
             <h3 class="text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Ranking criteria</h3>
-            <div class="flex items-center gap-4 bg-[#101323] px-4 min-h-[72px] py-2">
-              <div class="text-white flex items-center justify-center rounded-lg bg-[#21284a] shrink-0 size-12" data-icon="ListBullets" data-size="24px" data-weight="regular">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
-                  <path
-                    d="M80,64a8,8,0,0,1,8-8H216a8,8,0,0,1,0,16H88A8,8,0,0,1,80,64Zm136,56H88a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Zm0,64H88a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16ZM44,52A12,12,0,1,0,56,64,12,12,0,0,0,44,52Zm0,64a12,12,0,1,0,12,12A12,12,0,0,0,44,116Zm0,64a12,12,0,1,0,12,12A12,12,0,0,0,44,180Z"
-                  ></path>
-                </svg>
-              </div>
-              <div class="flex flex-col justify-center">
-                <p class="text-white text-base font-medium leading-normal line-clamp-1">Relevance, Experience, and Feedback</p>
-                <p class="text-[#8e99cc] text-sm font-normal leading-normal line-clamp-2">
-                  Matches are ranked based on relevance to your request, experience, and client feedback.
-                </p>
-              </div>
+            <div id="rankingCriteriaDisplay" class="text-white px-4 py-2 text-sm">
+                 <p id="rankingCriteriaText" class="font-semibold">Loading ranking criteria...</p>
+                 <p id="rankingCriteriaDescription" class="text-gray-400"></p>
             </div>
             <h3 class="text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Top matches</h3>
-            <div class="flex gap-4 bg-[#101323] px-4 py-3 justify-between">
-              <div class="flex items-start gap-4">
-                <div
-                  class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-[70px] w-fit"
-                  style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBUl19eMdEOJ5Lg1tUsynesrWfXDTV778C0GoV62Ml25iKzTkfFGY8XxGgBtKVLkOJd4EDsaHiTTnWf3b5kFspd0cVTlXO5PQNe2FYoIEkTHnV8kRKN_bJXB9-pGaUg4hdee2mFHYqUA7snn-BTv0iLHV_Hv04bh5ZO1wJXcIqByyg0ANtJZ8JgnRuvQ98Vjodv6LZPS2XIsx0jrKlZ6DLUX0EPNE38Oe77fRFqI3YKgiPfryyqiB-TZnObBfr2v3qweQULJAOnuMQ");'
-                ></div>
-                <div class="flex flex-1 flex-col justify-center">
-                  <p class="text-white text-base font-medium leading-normal">Sarah Johnson</p>
-                  <p class="text-[#8e99cc] text-sm font-normal leading-normal">
-                    Specializes in strength training and weight loss. Certified personal trainer with a proven track record of helping clients achieve their fitness goals.
-                  </p>
-                  <p class="text-[#8e99cc] text-sm font-normal leading-normal">Fitness Coach | 5 years experience | 4.8 stars (120 reviews)</p>
-                </div>
-              </div>
-              <div class="shrink-0">
-                <button
-                  class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-8 px-4 bg-[#21284a] text-white text-sm font-medium leading-normal w-fit"
-                >
-                  <span class="truncate">View Profile</span>
-                </button>
-              </div>
-            </div>
-            <div class="flex gap-4 bg-[#101323] px-4 py-3 justify-between">
-              <div class="flex items-start gap-4">
-                <div
-                  class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-[70px] w-fit"
-                  style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAJIvIKOS1r1dAr1SSbnqToqMbHU6K1d-omVFek1X6zvJF3_8ro6kvqbvKqyiyGMEV0vCY4StaM5vLS8VlHZuaiRpFAxyTbLwrhJjnbYwpg32bJPdO4k5MA1T01f8zsPGCUeFXmwRn_OxhbGptFXi-PXAPEWsMzRFDHGcInQcfZcRp65OYOiytBCPe-023EOWGZfTn0GXw-1CeSiWNK8HBbORXuPzD_PPYRQ2KiKM5lqNUmr6YMyb6abjLfu5oHHu6VfW9dKTapTuw");'
-                ></div>
-                <div class="flex flex-1 flex-col justify-center">
-                  <p class="text-white text-base font-medium leading-normal">Emily Carter</p>
-                  <p class="text-[#8e99cc] text-sm font-normal leading-normal">
-                    Offers personalized yoga sessions for all levels, focusing on flexibility, mindfulness, and stress reduction. Certified yoga instructor with a passion for
-                    holistic wellness.
-                  </p>
-                  <p class="text-[#8e99cc] text-sm font-normal leading-normal">Yoga Instructor | 3 years experience | 4.7 stars (95 reviews)</p>
-                </div>
-              </div>
-              <div class="shrink-0">
-                <button
-                  class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-8 px-4 bg-[#21284a] text-white text-sm font-medium leading-normal w-fit"
-                >
-                  <span class="truncate">View Profile</span>
-                </button>
-              </div>
-            </div>
-            <div class="flex gap-4 bg-[#101323] px-4 py-3 justify-between">
-              <div class="flex items-start gap-4">
-                <div
-                  class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-[70px] w-fit"
-                  style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBZEmqw1idV4Dk8YZvwv47bO3ylAsy6cLFcPbj06LTj-uWvS11S2vxuYJZ8sHI2RdztD_y06vtblIScdszznzSZty-WUj-47tf7zAva1SPK1xEjnV1xbh9KZxNiTMZKIDRsChSA0k5NXR8kDqKlPAcxsrVapb9-PHXvWmPYij6F87mK05qIblV3YzZN-H2Y1HxRYnrFKvD45YWKxxbyKGT71uql9FxwZjbL4xan_6XKyRsuzvLvJDk_eowVlg3pXDOD9YM4ttKZzVA");'
-                ></div>
-                <div class="flex flex-1 flex-col justify-center">
-                  <p class="text-white text-base font-medium leading-normal">Jessica Lee</p>
-                  <p class="text-[#8e99cc] text-sm font-normal leading-normal">
-                    Provides customized nutrition plans to support fitness goals and overall health. Registered dietitian with expertise in sports nutrition and healthy eating
-                    habits.
-                  </p>
-                  <p class="text-[#8e99cc] text-sm font-normal leading-normal">Nutritionist | 4 years experience | 4.9 stars (150 reviews)</p>
-                </div>
-              </div>
-              <div class="shrink-0">
-                <button
-                  class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-8 px-4 bg-[#21284a] text-white text-sm font-medium leading-normal w-fit"
-                >
-                  <span class="truncate">View Profile</span>
-                </button>
-              </div>
+            <div id="matchesContainer" class="flex flex-col gap-3 px-4 py-2">
+                <!-- Matches will be loaded here by JavaScript -->
             </div>
           </div>
         </div>
       </div>
     </div>
+    <script src="../js/app.js"></script>
+    <script src="../js/top_matches.js"></script>
   </body>
 </html>
