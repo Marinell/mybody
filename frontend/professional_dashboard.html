@@ -26,7 +26,7 @@
                     style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD7kyH7T-Zj7WMHyhfFXQ1JUD2LzX7-5WE_Wv9n9KSrDMb2_RfIsuaSiR0Nye_nBl9rkhMBixV8Hv4qUeQ1-Yeauia7RrKSAd4ebcsKmZt2F1YH0ghXRjTs3HTaX11kSBlZ-SHeDq_eAMq1elOCmKsJrt8Ijjzc0POm3PoxsFF-n6_5xLYqY7tL-ScrSoiAWGumuOsqqo1VU-PfvqHfQvmneH-lASUG5-niCbxWwsZPqxHlNxqQpoPt59iDc5DcQ1Wm8VZNXZM9j5Y");'
                   ></div>
                   <div class="flex flex-col">
-                    <h1 class="text-[#121317] text-base font-medium leading-normal">Sophia</h1>
+                    <h1 id="professionalName" class="text-[#121317] text-base font-medium leading-normal">Sophia</h1>
                     <p class="text-[#686d82] text-sm font-normal leading-normal">Professional</p>
                   </div>
                 </div>
@@ -102,68 +102,24 @@
                 </a>
               </div>
             </div>
+            <!-- Container for dynamic appointment requests -->
+            <div id="appointmentRequestsContainer" class="px-4 py-2">
+              <!-- Appointment requests will be loaded here by professional_dashboard.js -->
+            </div>
+            <!-- Static content below will be effectively replaced by JS if it populates the container above -->
+            <!--
             <h3 class="text-[#121317] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Today</h3>
             <div class="flex items-center gap-4 bg-white px-4 min-h-[72px] py-2 justify-between">
-              <div class="flex items-center gap-4">
-                <div
-                  class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-14 w-fit"
-                  style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCijw8eYrCb0GVg4pyjNTSgI6c0zH-ViheiSHHDq8E9RpS4sSwPUj6zM6vMRAnTUG9_oKPM5suiToWTvNtalrPfym5YAl50pS47Ns2_nk9F_2iEzYlVA17f_lcnDLx11SYOXUPGX_SK-XG4NQt0xg8_YsB95IHPROSMHFR3eVirs8-JQyM2-VhVrvdjiuq4hOrbGJ3-I8nEb57Y-vR_alWGCb8SuOY7i1h7KdmH61KWR6vKgk9ocKAKVuZ-DhEIZso_5h_E3kmSM4M");'
-                ></div>
-                <div class="flex flex-col justify-center">
-                  <p class="text-[#121317] text-base font-medium leading-normal line-clamp-1">New Client Consultation</p>
-                  <p class="text-[#686d82] text-sm font-normal leading-normal line-clamp-2">10:00 AM - 11:00 AM</p>
-                </div>
-              </div>
-              <div class="shrink-0">
-                <button
-                  class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-8 px-4 bg-[#f1f1f4] text-[#121317] text-sm font-medium leading-normal w-fit"
-                >
-                  <span class="truncate">View</span>
-                </button>
-              </div>
+              ... static request ...
             </div>
             <h3 class="text-[#121317] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Upcoming</h3>
-            <div class="flex items-center gap-4 bg-white px-4 min-h-[72px] py-2 justify-between">
-              <div class="flex items-center gap-4">
-                <div
-                  class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-14 w-fit"
-                  style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCVFkLtvd_WGa3lSinYXrZalIQX3CdyG2woBDiUURUx0v1g8DFu2KPHdlmkSo-3vd5-YbRDd3_eeiAFYgA-b3y6_YIdmunvZjodOIn8PtS5Vl32wrK5hs5AtP4lo3vOi1GYJcqC84QkDTdHTzc1M3W_f2EHLTVWvgWtVM1YczTRYS5ZNVXQddG3JOPL047ZwHkjBdHK0u9z1cQPbSWRKjcnZa2Akz3bcmR17MYtMJf4Eo7CDPDMw0bhT4UTXwzKNcUDep5v8qq-Ahs");'
-                ></div>
-                <div class="flex flex-col justify-center">
-                  <p class="text-[#121317] text-base font-medium leading-normal line-clamp-1">Follow-up Session</p>
-                  <p class="text-[#686d82] text-sm font-normal leading-normal line-clamp-2">Tomorrow, 11:00 AM - 12:00 PM</p>
-                </div>
-              </div>
-              <div class="shrink-0">
-                <button
-                  class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-8 px-4 bg-[#f1f1f4] text-[#121317] text-sm font-medium leading-normal w-fit"
-                >
-                  <span class="truncate">View</span>
-                </button>
-              </div>
-            </div>
-            <div class="flex items-center gap-4 bg-white px-4 min-h-[72px] py-2 justify-between">
-              <div class="flex items-center gap-4">
-                <div
-                  class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-14 w-fit"
-                  style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA2a6L-eX9VV78FbOtH3XpxMAKYCimgif2kmZ-RvnQUvQP4tD4FTH5GaEWSuwwXheI6XSwES2ZO_3HUtCY2upFEyD4K2a7ND5xgR_zcaxFwOJSmEMJ_nzBzkPYKpS9j3DsdtqiuPJ9MYL5uUmFbHF-u_OLGWNPdbk-xXMZoYp4SmL8VQ4C1ZjdY37PejFJqEGIW4ZaP79BfVQPjfSgrPph8WCqPbhDeHbtfzgFznX6xlSHKPkBpdhjUzqWz6WayrfhALHuF1hfwkl0");'
-                ></div>
-                <div class="flex flex-col justify-center">
-                  <p class="text-[#121317] text-base font-medium leading-normal line-clamp-1">Initial Assessment</p>
-                  <p class="text-[#686d82] text-sm font-normal leading-normal line-clamp-2">Friday, 2:00 PM - 3:00 PM</p>
-                </div>
-              </div>
-              <div class="shrink-0">
-                <button
-                  class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-8 px-4 bg-[#f1f1f4] text-[#121317] text-sm font-medium leading-normal w-fit"
-                >
-                  <span class="truncate">View</span>
-                </button>
-              </div>
-            </div>
+            ... more static requests ...
+            -->
           </div>
         </div>
       </div>
     </div>
+    <script src="../js/app.js"></script>
+    <script src="../js/professional_dashboard.js"></script>
   </body>
 </html>
