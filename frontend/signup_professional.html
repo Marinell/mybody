@@ -55,11 +55,12 @@
         <div class="px-40 flex flex-1 justify-center py-5">
           <div class="layout-content-container flex flex-col w-[512px] max-w-[512px] py-5 max-w-[960px] flex-1">
             <div class="flex flex-wrap justify-between gap-3 p-4"><p class="text-[#121217] tracking-light text-[32px] font-bold leading-tight min-w-72">Become a Pro</p></div>
+            <div id="professionalRegisterMessage" class="text-center py-3 px-4 hidden"></div>
             <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
               <label class="flex flex-col min-w-40 flex-1">
                 <p class="text-[#121217] text-base font-medium leading-normal pb-2">Full Name</p>
                 <input
-                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#121217] focus:outline-0 focus:ring-0 border-none bg-[#f0f1f4] focus:border-none h-14 placeholder:text-[#656a86] p-4 text-base font-normal leading-normal"
+                  id="name" name="name" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#121217] focus:outline-0 focus:ring-0 border-none bg-[#f0f1f4] focus:border-none h-14 placeholder:text-[#656a86] p-4 text-base font-normal leading-normal"
                   value=""
                 />
               </label>
@@ -68,16 +69,22 @@
               <label class="flex flex-col min-w-40 flex-1">
                 <p class="text-[#121217] text-base font-medium leading-normal pb-2">Email</p>
                 <input
-                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#121217] focus:outline-0 focus:ring-0 border-none bg-[#f0f1f4] focus:border-none h-14 placeholder:text-[#656a86] p-4 text-base font-normal leading-normal"
+                  id="email" name="email" type="email" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#121217] focus:outline-0 focus:ring-0 border-none bg-[#f0f1f4] focus:border-none h-14 placeholder:text-[#656a86] p-4 text-base font-normal leading-normal"
                   value=""
                 />
               </label>
             </div>
             <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
               <label class="flex flex-col min-w-40 flex-1">
+                <p class="text-[#121217] text-base font-medium leading-normal pb-2">Password</p>
+                <input id="password" name="password" type="password" placeholder="Create a strong password" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#121217] focus:outline-0 focus:ring-0 border-none bg-[#f0f1f4] focus:border-none h-14 placeholder:text-[#656a86] p-4 text-base font-normal leading-normal" required />
+              </label>
+            </div>
+            <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
+              <label class="flex flex-col min-w-40 flex-1">
                 <p class="text-[#121217] text-base font-medium leading-normal pb-2">Phone Number</p>
                 <input
-                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#121217] focus:outline-0 focus:ring-0 border-none bg-[#f0f1f4] focus:border-none h-14 placeholder:text-[#656a86] p-4 text-base font-normal leading-normal"
+                  id="phoneNumber" name="phoneNumber" type="tel" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#121217] focus:outline-0 focus:ring-0 border-none bg-[#f0f1f4] focus:border-none h-14 placeholder:text-[#656a86] p-4 text-base font-normal leading-normal"
                   value=""
                 />
               </label>
@@ -86,7 +93,7 @@
               <label class="flex flex-col min-w-40 flex-1">
                 <p class="text-[#121217] text-base font-medium leading-normal pb-2">Profession</p>
                 <input
-                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#121217] focus:outline-0 focus:ring-0 border-none bg-[#f0f1f4] focus:border-none h-14 placeholder:text-[#656a86] p-4 text-base font-normal leading-normal"
+                  id="profession" name="profession" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#121217] focus:outline-0 focus:ring-0 border-none bg-[#f0f1f4] focus:border-none h-14 placeholder:text-[#656a86] p-4 text-base font-normal leading-normal"
                   value=""
                 />
               </label>
@@ -95,7 +102,7 @@
               <label class="flex flex-col min-w-40 flex-1">
                 <p class="text-[#121217] text-base font-medium leading-normal pb-2">Address</p>
                 <input
-                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#121217] focus:outline-0 focus:ring-0 border-none bg-[#f0f1f4] focus:border-none h-14 placeholder:text-[#656a86] p-4 text-base font-normal leading-normal"
+                  id="address" name="address" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#121217] focus:outline-0 focus:ring-0 border-none bg-[#f0f1f4] focus:border-none h-14 placeholder:text-[#656a86] p-4 text-base font-normal leading-normal"
                   value=""
                 />
               </label>
@@ -104,7 +111,7 @@
               <label class="flex flex-col min-w-40 flex-1">
                 <p class="text-[#121217] text-base font-medium leading-normal pb-2">Postal Code</p>
                 <input
-                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#121217] focus:outline-0 focus:ring-0 border-none bg-[#f0f1f4] focus:border-none h-14 placeholder:text-[#656a86] p-4 text-base font-normal leading-normal"
+                  id="postalCode" name="postalCode" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#121217] focus:outline-0 focus:ring-0 border-none bg-[#f0f1f4] focus:border-none h-14 placeholder:text-[#656a86] p-4 text-base font-normal leading-normal"
                   value=""
                 />
               </label>
@@ -113,7 +120,7 @@
               <label class="flex flex-col min-w-40 flex-1">
                 <p class="text-[#121217] text-base font-medium leading-normal pb-2">Years of Experience</p>
                 <input
-                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#121217] focus:outline-0 focus:ring-0 border-none bg-[#f0f1f4] focus:border-none h-14 placeholder:text-[#656a86] p-4 text-base font-normal leading-normal"
+                  id="yearsOfExperience" name="yearsOfExperience" type="number" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#121217] focus:outline-0 focus:ring-0 border-none bg-[#f0f1f4] focus:border-none h-14 placeholder:text-[#656a86] p-4 text-base font-normal leading-normal"
                   value=""
                 />
               </label>
@@ -122,7 +129,7 @@
               <label class="flex flex-col min-w-40 flex-1">
                 <p class="text-[#121217] text-base font-medium leading-normal pb-2">Qualifications</p>
                 <textarea
-                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#121217] focus:outline-0 focus:ring-0 border-none bg-[#f0f1f4] focus:border-none min-h-36 placeholder:text-[#656a86] p-4 text-base font-normal leading-normal"
+                  id="qualifications" name="qualifications" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#121217] focus:outline-0 focus:ring-0 border-none bg-[#f0f1f4] focus:border-none min-h-36 placeholder:text-[#656a86] p-4 text-base font-normal leading-normal"
                 ></textarea>
               </label>
             </div>
@@ -130,7 +137,7 @@
               <label class="flex flex-col min-w-40 flex-1">
                 <p class="text-[#121217] text-base font-medium leading-normal pb-2">About You</p>
                 <textarea
-                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#121217] focus:outline-0 focus:ring-0 border-none bg-[#f0f1f4] focus:border-none min-h-36 placeholder:text-[#656a86] p-4 text-base font-normal leading-normal"
+                  id="aboutYou" name="aboutYou" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#121217] focus:outline-0 focus:ring-0 border-none bg-[#f0f1f4] focus:border-none min-h-36 placeholder:text-[#656a86] p-4 text-base font-normal leading-normal"
                 ></textarea>
               </label>
             </div>
@@ -138,7 +145,7 @@
               <label class="flex flex-col min-w-40 flex-1">
                 <p class="text-[#121217] text-base font-medium leading-normal pb-2">LinkedIn Profile</p>
                 <input
-                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#121217] focus:outline-0 focus:ring-0 border-none bg-[#f0f1f4] focus:border-none h-14 placeholder:text-[#656a86] p-4 text-base font-normal leading-normal"
+                  id="linkedinProfile" name="linkedinProfile" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#121217] focus:outline-0 focus:ring-0 border-none bg-[#f0f1f4] focus:border-none h-14 placeholder:text-[#656a86] p-4 text-base font-normal leading-normal"
                   value=""
                 />
               </label>
@@ -147,7 +154,7 @@
               <label class="flex flex-col min-w-40 flex-1">
                 <p class="text-[#121217] text-base font-medium leading-normal pb-2">Instagram Profile</p>
                 <input
-                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#121217] focus:outline-0 focus:ring-0 border-none bg-[#f0f1f4] focus:border-none h-14 placeholder:text-[#656a86] p-4 text-base font-normal leading-normal"
+                  id="instagramProfile" name="instagramProfile" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#121217] focus:outline-0 focus:ring-0 border-none bg-[#f0f1f4] focus:border-none h-14 placeholder:text-[#656a86] p-4 text-base font-normal leading-normal"
                   value=""
                 />
               </label>
@@ -156,7 +163,7 @@
               <label class="flex flex-col min-w-40 flex-1">
                 <p class="text-[#121217] text-base font-medium leading-normal pb-2">Facebook Profile</p>
                 <input
-                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#121217] focus:outline-0 focus:ring-0 border-none bg-[#f0f1f4] focus:border-none h-14 placeholder:text-[#656a86] p-4 text-base font-normal leading-normal"
+                  id="facebookProfile" name="facebookProfile" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#121217] focus:outline-0 focus:ring-0 border-none bg-[#f0f1f4] focus:border-none h-14 placeholder:text-[#656a86] p-4 text-base font-normal leading-normal"
                   value=""
                 />
               </label>
@@ -165,7 +172,7 @@
               <label class="flex flex-col min-w-40 flex-1">
                 <p class="text-[#121217] text-base font-medium leading-normal pb-2">YouTube Profile</p>
                 <input
-                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#121217] focus:outline-0 focus:ring-0 border-none bg-[#f0f1f4] focus:border-none h-14 placeholder:text-[#656a86] p-4 text-base font-normal leading-normal"
+                  id="youtubeProfile" name="youtubeProfile" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#121217] focus:outline-0 focus:ring-0 border-none bg-[#f0f1f4] focus:border-none h-14 placeholder:text-[#656a86] p-4 text-base font-normal leading-normal"
                   value=""
                 />
               </label>
@@ -174,7 +181,7 @@
               <label class="flex flex-col min-w-40 flex-1">
                 <p class="text-[#121217] text-base font-medium leading-normal pb-2">TikTok Profile</p>
                 <input
-                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#121217] focus:outline-0 focus:ring-0 border-none bg-[#f0f1f4] focus:border-none h-14 placeholder:text-[#656a86] p-4 text-base font-normal leading-normal"
+                  id="tiktokProfile" name="tiktokProfile" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#121217] focus:outline-0 focus:ring-0 border-none bg-[#f0f1f4] focus:border-none h-14 placeholder:text-[#656a86] p-4 text-base font-normal leading-normal"
                   value=""
                 />
               </label>
@@ -183,7 +190,7 @@
               <label class="flex flex-col min-w-40 flex-1">
                 <p class="text-[#121217] text-base font-medium leading-normal pb-2">Twitter Profile</p>
                 <input
-                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#121217] focus:outline-0 focus:ring-0 border-none bg-[#f0f1f4] focus:border-none h-14 placeholder:text-[#656a86] p-4 text-base font-normal leading-normal"
+                  id="twitterProfile" name="twitterProfile" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#121217] focus:outline-0 focus:ring-0 border-none bg-[#f0f1f4] focus:border-none h-14 placeholder:text-[#656a86] p-4 text-base font-normal leading-normal"
                   value=""
                 />
               </label>
@@ -192,7 +199,7 @@
               <label class="flex flex-col min-w-40 flex-1">
                 <p class="text-[#121217] text-base font-medium leading-normal pb-2">Website</p>
                 <input
-                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#121217] focus:outline-0 focus:ring-0 border-none bg-[#f0f1f4] focus:border-none h-14 placeholder:text-[#656a86] p-4 text-base font-normal leading-normal"
+                  id="website" name="website" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#121217] focus:outline-0 focus:ring-0 border-none bg-[#f0f1f4] focus:border-none h-14 placeholder:text-[#656a86] p-4 text-base font-normal leading-normal"
                   value=""
                 />
               </label>
@@ -205,16 +212,16 @@
                     Upload your certifications, licenses, and any other relevant documents to verify your qualifications.
                   </p>
                 </div>
-                <button
-                  class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#f0f1f4] text-[#121217] text-sm font-bold leading-normal tracking-[0.015em]"
-                >
-                  <span class="truncate">Upload Documents</span>
-                </button>
+                <label for="documents" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#f0f1f4] text-[#121217] text-sm font-bold leading-normal tracking-[0.015em]">
+                  <span class="truncate">Choose Files</span>
+                </label>
+                <input type="file" id="documents" name="documents" multiple class="hidden" />
+                <div id="fileList" class="text-sm text-[#656a86] mt-2"></div>
               </div>
             </div>
             <div class="flex px-4 py-3">
               <button
-                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 flex-1 bg-[#3e58da] text-white text-base font-bold leading-normal tracking-[0.015em]"
+                id="submitProfessionalRegistration" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 flex-1 bg-[#3e58da] text-white text-base font-bold leading-normal tracking-[0.015em]"
               >
                 <span class="truncate">Submit</span>
               </button>
@@ -229,5 +236,7 @@
         </div>
       </div>
     </div>
+    <script src="../js/app.js"></script>
+    <script src="../js/signup_professional.js"></script>
   </body>
 </html>
