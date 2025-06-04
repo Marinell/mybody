@@ -28,10 +28,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.security.spec.InvalidKeySpecException;
+import java.util.*;
 
 @ApplicationScoped
 public class ProfessionalService {
@@ -56,8 +54,17 @@ public class ProfessionalService {
 
     private String hashPassword(String password) {
         ClearPasswordSpec clearSpec = new ClearPasswordSpec(password.toCharArray());
-        Password newPassword = passwordFactory.generatePassword(clearSpec);
-        return ModularCrypt.encode(newPassword);
+        Password newPassword = null;
+        try {
+            newPassword = passwordFactory.generatePassword(clearSpec);
+        } catch (InvalidKeySpecException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            return Arrays.toString(ModularCrypt.encode(newPassword));
+        } catch (InvalidKeySpecException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Transactional

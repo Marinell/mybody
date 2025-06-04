@@ -6,7 +6,7 @@ import com.fitconnect.entity.ProfileStatus;
 import com.fitconnect.entity.Skill;
 import com.fitconnect.llm.ProfessionalProfileAnalyzer;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.InjectMock; // For mocking AiServices or other CDI beans
+import io.quarkus.test.junit.mockito.InjectSpy; // For mocking AiServices or other CDI beans
 import jakarta.inject.Inject; // Standard CDI inject
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +29,7 @@ public class ProfessionalScreeningServiceTest {
     @Inject
     ProfessionalScreeningService screeningService;
 
-    @InjectMock // Mocks the LLM interface
+    @InjectSpy // Mocks the LLM interface
     ProfessionalProfileAnalyzer mockProfileAnalyzer;
 
     // We need a way to set the API key for tests or mock the config property.

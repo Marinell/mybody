@@ -64,11 +64,7 @@ public class ProfessionalScreeningService {
                     if (Files.exists(docPath)) {
                         try (InputStream stream = Files.newInputStream(docPath)) {
                             String text = tika.parseToString(stream);
-                            documentTexts.append(text).append("
-
----
-
-");
+                            documentTexts.append(text).append(" --- ");
                             LOG.infof("Successfully extracted text from document: %s", doc.fileName);
                         }
                     } else {
@@ -76,21 +72,12 @@ public class ProfessionalScreeningService {
                     }
                 } catch (Exception e) {
                     LOG.errorf(e, "Failed to read or parse document %s for professional ID: %d", doc.fileName, professionalId);
-                    documentTexts.append("Error extracting text from document: ").append(doc.fileName).append("
-
----
-
-");
+                    documentTexts.append("Error extracting text from document: ").append(doc.fileName).append(" --- ");
                 }
             }
         }
 
-        String profileData = String.format(
-            "Profession: %s
-Years of Experience: %s
-Qualifications: %s
-About: %s
-Social Media/Links: %s",
+        String profileData = String.format("Profession: %s Years of Experience: %s Qualifications: %s About: %s Social Media/Links: %s",
             professional.profession != null ? professional.profession : "N/A",
             professional.yearsOfExperience != null ? professional.yearsOfExperience.toString() : "N/A",
             professional.qualifications != null ? professional.qualifications : "N/A",

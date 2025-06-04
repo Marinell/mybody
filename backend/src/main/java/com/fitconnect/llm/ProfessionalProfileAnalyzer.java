@@ -1,10 +1,10 @@
 package com.fitconnect.llm;
 
-import dev.langchain4j.service.AiService;
 import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.UserMessage;
+import io.quarkiverse.langchain4j.RegisterAiService;
 
-@AiService
+@RegisterAiService
 public interface ProfessionalProfileAnalyzer {
 
     @SystemMessage("""

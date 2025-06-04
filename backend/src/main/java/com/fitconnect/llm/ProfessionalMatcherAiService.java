@@ -3,10 +3,10 @@ package com.fitconnect.llm;
 import com.fitconnect.dto.LLMStructuredMatchResponse;
 import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.UserMessage;
-import dev.langchain4j.service.AiService;
 import dev.langchain4j.service.V;
+import io.quarkiverse.langchain4j.RegisterAiService;
 
-@AiService
+@RegisterAiService
 public interface ProfessionalMatcherAiService {
 
     @SystemMessage("""

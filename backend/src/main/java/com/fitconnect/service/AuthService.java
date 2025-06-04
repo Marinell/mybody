@@ -19,7 +19,10 @@ import org.wildfly.security.password.util.ModularCrypt;
 import org.wildfly.security.password.spec.ClearPasswordSpec;
 
 
+import java.security.InvalidKeyException;
+import java.security.spec.InvalidKeySpecException;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -50,16 +53,34 @@ public class AuthService {
         // Create a clear password spec
         ClearPasswordSpec clearSpec = new ClearPasswordSpec(password.toCharArray());
         // Generate a new hashed password
-        Password newPassword = passwordFactory.generatePassword(clearSpec);
+        Password newPassword = null;
+        try {
+            newPassword = passwordFactory.generatePassword(clearSpec);
+        } catch (InvalidKeySpecException e) {
+            throw new RuntimeException(e);
+        }
         // Encode it to a string that can be stored
-        return ModularCrypt.encode(newPassword);
+        try {
+            return Arrays.toString(ModularCrypt.encode(newPassword));
+        } catch (InvalidKeySpecException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private boolean verifyPassword(String plainPassword, String hashedPassword) {
         // Decode the stored hashed password string
-        Password storedPassword = ModularCrypt.decode(hashedPassword);
+        Password storedPassword = null;
+        try {
+            storedPassword = ModularCrypt.decode(hashedPassword);
+        } catch (InvalidKeySpecException e) {
+            throw new RuntimeException(e);
+        }
         // Verify the plain password against the stored hashed password
-        return passwordFactory.verify(storedPassword, plainPassword.toCharArray());
+        try {
+            return passwordFactory.verify(storedPassword, plainPassword.toCharArray());
+        } catch (InvalidKeyException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Transactional
