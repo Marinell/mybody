@@ -68,6 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
             } catch (error) {
+            debugger;
                 console.error('Login failed:', error);
                 let message = 'Login failed. Please check your credentials and try again.';
                 if (error && error.data && error.data.message) {
@@ -89,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Add event listener for "Don't have an account? Sign up"
-    const signupLink = Array.from(document.querySelectorAll('p.text-\\[#8e99cc\\]')).find(p => p.textContent.includes("Don't have an account? Sign up"));
+    const signupLink = document.getElementById('signup');
     if (signupLink) {
         signupLink.addEventListener('click', (e) => {
             e.preventDefault();

@@ -13,6 +13,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.jboss.logging.Logger;
 import org.wildfly.security.password.PasswordFactory;
 import org.wildfly.security.password.Password;
 import org.wildfly.security.password.util.ModularCrypt;
@@ -29,6 +30,8 @@ import java.util.Set;
 
 @ApplicationScoped
 public class AuthService {
+
+    private static final Logger LOG = Logger.getLogger(AuthService.class);
 
     @Inject
     @ConfigProperty(name = "mp.jwt.verify.issuer")
@@ -102,7 +105,9 @@ public class AuthService {
 
     public Optional<LoginResponse> login(LoginRequest request) {
         Optional<User> userOptional = User.find("email", request.getEmail()).firstResultOptional();
+        LOG.infof("searching user: " + request.getEmail());
         if (userOptional.isPresent()) {
+            LOG.infof("user found");
             User user = userOptional.get();
             if (verifyPassword(request.getPassword(), user.getPassword())) {
                 Set<String> roles = new HashSet<>();
@@ -117,6 +122,7 @@ public class AuthService {
                 return Optional.of(new LoginResponse(token, user.getId(), user.getEmail(), user.getRole().name()));
             }
         }
+        LOG.infof("user NOT found");
         return Optional.empty();
     }
 }

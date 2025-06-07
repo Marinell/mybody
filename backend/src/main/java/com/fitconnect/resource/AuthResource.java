@@ -4,6 +4,7 @@ import com.fitconnect.dto.LoginRequest;
 import com.fitconnect.dto.LoginResponse;
 import com.fitconnect.dto.RegisterRequest;
 import com.fitconnect.entity.User;
+import com.fitconnect.service.AdminService;
 import com.fitconnect.service.AuthService;
 
 import jakarta.inject.Inject;
@@ -13,6 +14,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.jboss.logging.Logger;
 
 import java.util.Optional;
 
