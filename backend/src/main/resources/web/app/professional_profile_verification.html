@@ -1,5 +1,6 @@
 <html>
   <head>
+    {#bundle /}
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
     <link
       rel="stylesheet"
@@ -42,6 +43,7 @@
           <div class="flex flex-1 justify-end gap-8">
             <div class="flex items-center gap-9">
               <a class="text-white text-sm font-medium leading-normal" href="#">Home</a>
+              <a class="text-white text-sm font-medium leading-normal" href="#">Explore</a>
               <a class="text-white text-sm font-medium leading-normal" href="#">My Network</a>
               <a class="text-white text-sm font-medium leading-normal" href="#">Jobs</a>
               <a class="text-white text-sm font-medium leading-normal" href="#">Messages</a>
@@ -61,30 +63,30 @@
             </button>
             <div
               class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
-              style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCPaUy08bqK6cLd8FyAK4JWonBWunluunyyPf4FgLEFlkzT0HnHuLW7IjHYDYx_jZMUDht9WfOydhg6Jm0--wdvlHeKKfsKt48Z5fbmdoV4lOgb18mka6f5O8XMQtJFEL28EbsS9qwBkDzbT5bv72KCqNDomUoZqBkhph61veRktyq2yqEEuyq9ryrcbLdZfWHaY1gpwA0JgkcFIkM__gtXfj-fBkz4q5DFLIrZzZLvKcChs6DxcQUeVOcffi5yIgd4W_K4zA3One0");'
+              style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA6dLHuD0ecvFM2Nq4FZYl57fcXfGURp1qRllbQsNZMbTwEZxsLFQ9bvEmrfLczPO7XSPkYYxJc6A7gEhP9eA752SngKQssycHrpdae_ytntc258h8dndH9tIKLwTWfPLLyUjzJAgM_WIxiZMQbPpVj983AiS8kVIq9g6I_ucypD3IjdecN8LILFsDg2VeNnabjTQvy_ZGgm_Y3rwkXgdoe1v5ynhGOQ4ziU5XE0-0su6RibV3bTQqwuhgTAQsA7C6opd2kh7XDl6M");'
             ></div>
           </div>
         </header>
         <div class="px-40 flex flex-1 justify-center py-5">
-          <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
-            <div class="flex flex-wrap justify-between gap-3 p-4">
-              <p class="text-white tracking-light text-[32px] font-bold leading-tight min-w-72">Top matches for your request</p>
+          <div class="layout-content-container flex flex-col w-[512px] max-w-[512px] py-5 max-w-[960px] flex-1">
+            <h2 class="text-white tracking-light text-[28px] font-bold leading-tight px-4 text-center pb-3 pt-5">Profile Verification</h2>
+            <p id="verificationStatusMessage" class="text-white text-base font-normal leading-normal pb-3 pt-1 px-4 text-center">Your profile is currently under review. We'll notify you once it's approved.</p>
+            <div class="flex flex-col gap-3 p-4">
+              <div class="flex gap-6 justify-between"><p class="text-white text-base font-medium leading-normal">Verification Progress</p></div>
+              <div class="rounded bg-[#2f396a]"><div id="verificationProgress" class="h-2 rounded bg-[#607afb]" style="width: 100%;"></div></div>
+              <p id="verificationProgressText" class="text-[#8e99cc] text-sm font-normal leading-normal">Completed</p>
             </div>
-            <div id="matchPageMessage" class="text-center py-3 px-4 hidden text-white"></div>
-            <h3 class="text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Ranking criteria</h3>
-            <div id="rankingCriteriaDisplay" class="text-white px-4 py-2 text-sm">
-                 <p id="rankingCriteriaText" class="font-semibold">Loading ranking criteria...</p>
-                 <p id="rankingCriteriaDescription" class="text-gray-400"></p>
+            <div class="flex px-4 py-3 justify-center">
+              <button
+                id="verificationContinueButton" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-4 bg-[#607afb] text-white text-sm font-bold leading-normal tracking-[0.015em]"
+              >
+                <span class="truncate">Continue</span>
+              </button>
             </div>
-            <h3 class="text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Top matches</h3>
-            <div id="matchesContainer" class="flex flex-col gap-3 px-4 py-2">
-                <!-- Matches will be loaded here by JavaScript -->
-            </div>
+            <div id="dashboardLinkContainer" class="flex px-4 py-3 justify-center hidden"></div>
           </div>
         </div>
       </div>
     </div>
-    <script src="./js/app.js"></script>
-    <script src="./js/top_matches.js"></script>
   </body>
 </html>
