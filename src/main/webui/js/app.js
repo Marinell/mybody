@@ -33,22 +33,19 @@ function isLoggedIn() {
     return !!getAuthToken();
 }
 
+// Modified logout: Navigation will be handled by React Router via AuthContext
 function logout() {
     removeAuthToken();
     removeUserInfo();
     // Potentially clear other session-related data
-    redirectTo('frontend/login.html'); // Assuming login page is at this path from root
+    // redirectTo('frontend/login.html'); // Removed: Navigation handled by calling component/context
+    console.log("User logged out, token and user info removed from local storage.");
 }
 
 // --- Navigation ---
+// This redirectTo is for legacy HTML pages. React components will use react-router-dom.
 function redirectTo(path) {
-    // Construct the full path from the repository root
-    // window.location.pathname usually gives path from domain root.
-    // For local files, this might need adjustment or be relative.
-    // Assuming these files are served from a web server where paths are relative to the root.
-    // If opening HTML files directly, paths need to be relative from current file.
-    // For simplicity, assuming a server context or that paths are handled correctly by browser.
-    window.location.href = '../../' + path; // Adjust if files are deeper or served differently
+    window.location.href = '../../' + path;
 }
 
 // --- API Client ---
@@ -76,13 +73,14 @@ async function apiClient(endpoint, method = 'GET', body = null, isFormData = fal
     try {
         const response = await fetch(url, config);
         if (response.status === 401) { // Unauthorized
-            // Token might be expired or invalid
             console.warn('API call returned 401 Unauthorized. Logging out.');
-            logout(); // Force logout
+            // The original logout() here caused a redirect, which might not be desired for all API calls.
+            // For React, it's better to let the calling code (e.g., AuthContext) handle navigation.
+            removeAuthToken(); // Clear token to force re-login on next protected action
+            removeUserInfo();
             return Promise.reject({ status: 401, message: 'Unauthorized. Please login again.'});
         }
         if (!response.ok) {
-            // Try to parse error message from backend if JSON
             let errorData;
             const contentType = response.headers.get("content-type");
             if (contentType && contentType.indexOf("application/json") !== -1) {
@@ -93,28 +91,25 @@ async function apiClient(endpoint, method = 'GET', body = null, isFormData = fal
             console.error('API Error:', response.status, errorData);
             return Promise.reject({ status: response.status, data: errorData, message: errorData.message || `HTTP error! status: ${response.status}` });
         }
-        // If response has no content (e.g., 204 No Content)
         if (response.status === 204) {
             return Promise.resolve(null);
         }
-        return response.json(); // Assumes API always returns JSON for OK responses with content
+        return response.json();
     } catch (error) {
         console.error('Network or other error in apiClient:', error);
         return Promise.reject({ message: error.message || 'Network error or unable to reach API.' });
     }
 }
 
-// --- UI Helpers (Placeholders) ---
+// --- UI Helpers (Deprecated for React components but kept for any remaining legacy JS) ---
 function displayMessage(elementId, message, isError = false) {
     const element = document.getElementById(elementId);
     if (element) {
         element.textContent = message;
         element.style.color = isError ? 'red' : 'green';
-        element.style.display = 'block'; // Make it visible
+        element.style.display = 'block';
     } else {
-        // Fallback if dedicated message element doesn't exist
         if (isError) console.error(message); else console.log(message);
-        // alert(message); // Avoid alerts for better UX in real app
     }
 }
 
@@ -126,41 +121,39 @@ function clearMessage(elementId) {
     }
 }
 
-// Function to protect pages
-function protectPage(allowedRoles = []) { // allowedRoles can be empty (just logged in) or specify roles
+// Function to protect pages (Deprecated for React components)
+function protectPage(allowedRoles = []) {
     if (!isLoggedIn()) {
         redirectTo('frontend/login.html');
-        return false; // Not logged in
+        return false;
     }
     const userInfo = getUserInfo();
     if (userInfo && allowedRoles.length > 0 && !allowedRoles.includes(userInfo.role)) {
-        alert('You do not have permission to view this page.'); // Simple alert for now
-        // Redirect to a generic dashboard or login
-        // For now, let's redirect to login, or a general 'access-denied.html' if we had one.
-        logout(); // Or redirect to a more suitable page like a generic dashboard
-        return false; // Role not allowed
+        alert('You do not have permission to view this page.');
+        logout(); // Original logout called redirectTo
+        return false;
     }
-    return true; // Logged in and role (if specified) is allowed
+    return true;
 }
 
+console.log('app.js loaded (refactored for React context usage)');
 
-// Example of how to use protectPage at the top of a script for a protected HTML page:
-// document.addEventListener('DOMContentLoaded', () => {
-//     if (!protectPage(['CLIENT'])) { // Example: only CLIENTs allowed
-//         return; // Stop further script execution if redirect happens
-//     }
-//     // ... rest of the page-specific JavaScript for logged-in, authorized users
-// });
+// Removed global logout button event listener
 
-console.log('app.js loaded');
-
-// Event listener for global logout button
-document.addEventListener('DOMContentLoaded', () => {
-    const logoutBtn = document.getElementById('logoutButton');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', (e) => {
-            e.preventDefault(); // If it's a link, prevent navigation
-            logout();
-        });
-    }
-});
+// Ensure these are available for import
+export {
+    API_BASE_URL,
+    saveAuthToken,
+    getAuthToken,
+    removeAuthToken,
+    saveUserInfo,
+    getUserInfo,
+    removeUserInfo,
+    isLoggedIn,
+    logout, // To be called by AuthContext
+    apiClient,
+    redirectTo, // Kept for any legacy JS that might still use it
+    displayMessage, // Kept for legacy
+    clearMessage,   // Kept for legacy
+    protectPage     // Kept for legacy
+};
