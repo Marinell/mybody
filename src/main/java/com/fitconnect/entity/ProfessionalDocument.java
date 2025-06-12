@@ -2,9 +2,15 @@ package com.fitconnect.entity;
 
 import jakarta.persistence.*;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "professional_documents")
+@Getter
+@Setter
+@NoArgsConstructor
 public class ProfessionalDocument extends PanacheEntityBase {
 
     @Id
@@ -18,45 +24,4 @@ public class ProfessionalDocument extends PanacheEntityBase {
     public String fileName;
     public String fileType; // e.g., application/pdf, image/jpeg
     public String storagePath; // Path where the file is stored
-
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Professional getProfessional() {
-        return professional;
-    }
-
-    public void setProfessional(Professional professional) {
-        this.professional = professional;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public String getFileType() {
-        return fileType;
-    }
-
-    public void setFileType(String fileType) {
-        this.fileType = fileType;
-    }
-
-    public String getStoragePath() {
-        return storagePath;
-    }
-
-    public void setStoragePath(String storagePath) {
-        this.storagePath = storagePath;
-    }
 }

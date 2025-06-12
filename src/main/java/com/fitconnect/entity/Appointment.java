@@ -3,9 +3,15 @@ package com.fitconnect.entity;
 import jakarta.persistence.*;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "appointments")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Appointment extends PanacheEntityBase {
 
     @Id
@@ -36,70 +42,5 @@ public class Appointment extends PanacheEntityBase {
     protected void onCreate() {
         createdAt = LocalDateTime.now();
         status = AppointmentStatus.REQUESTED; // Initial status when client picks a professional
-    }
-
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Professional getProfessional() {
-        return professional;
-    }
-
-    public void setProfessional(Professional professional) {
-        this.professional = professional;
-    }
-
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
-    }
-
-    public ServiceRequest getServiceRequest() {
-        return serviceRequest;
-    }
-
-    public void setServiceRequest(ServiceRequest serviceRequest) {
-        this.serviceRequest = serviceRequest;
-    }
-
-    public LocalDateTime getAppointmentDateTime() {
-        return appointmentDateTime;
-    }
-
-    public void setAppointmentDateTime(LocalDateTime appointmentDateTime) {
-        this.appointmentDateTime = appointmentDateTime;
-    }
-
-    public String getCommunicationDetails() {
-        return communicationDetails;
-    }
-
-    public void setCommunicationDetails(String communicationDetails) {
-        this.communicationDetails = communicationDetails;
-    }
-
-    public AppointmentStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(AppointmentStatus status) {
-        this.status = status;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 }

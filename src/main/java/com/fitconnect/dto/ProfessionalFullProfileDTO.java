@@ -4,11 +4,15 @@ import com.fitconnect.entity.Professional;
 import com.fitconnect.entity.ProfessionalDocument;
 import com.fitconnect.entity.ProfileStatus;
 import com.fitconnect.entity.Skill;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Data
+@NoArgsConstructor
 public class ProfessionalFullProfileDTO {
     public Long id;
     public String name;
@@ -26,6 +30,8 @@ public class ProfessionalFullProfileDTO {
     public List<String> skills; // Names of skills
     public List<DocumentInfoDTO> documents;
 
+    @Data
+    @NoArgsConstructor
     public static class DocumentInfoDTO {
         public Long id;
         public String fileName;
