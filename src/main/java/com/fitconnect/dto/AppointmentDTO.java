@@ -3,7 +3,9 @@ package com.fitconnect.dto;
 import com.fitconnect.entity.Appointment;
 import com.fitconnect.entity.AppointmentStatus;
 import java.time.LocalDateTime;
+import lombok.Data;
 
+@Data
 public class AppointmentDTO {
     public Long id;
     public Long serviceRequestId;

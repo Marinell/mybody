@@ -1,12 +1,10 @@
 package com.fitconnect.dto;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
 public class ClientSelectProfessionalRequestDTO {
     private Long professionalId;
-
-    public Long getProfessionalId() {
-        return professionalId;
-    }
-    public void setProfessionalId(Long professionalId) {
-        this.professionalId = professionalId;
-    }
 }

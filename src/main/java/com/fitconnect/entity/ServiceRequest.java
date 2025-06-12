@@ -3,9 +3,15 @@ package com.fitconnect.entity;
 import jakarta.persistence.*;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "service_requests")
+@Getter
+@Setter
+@NoArgsConstructor
 public class ServiceRequest extends PanacheEntityBase {
 
     @Id
@@ -36,70 +42,5 @@ public class ServiceRequest extends PanacheEntityBase {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
-    }
-
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public String getServiceDescription() {
-        return serviceDescription;
-    }
-
-    public void setServiceDescription(String serviceDescription) {
-        this.serviceDescription = serviceDescription;
-    }
-
-    public String getBudget() {
-        return budget;
-    }
-
-    public void setBudget(String budget) {
-        this.budget = budget;
-    }
-
-    public ServiceRequestStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(ServiceRequestStatus status) {
-        this.status = status;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 }

@@ -5,7 +5,11 @@ import com.fitconnect.entity.Skill;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
 public class ProfessionalPublicProfileDTO {
     public Long id;
     public String name;

@@ -3,7 +3,11 @@ package com.fitconnect.dto;
 import com.fitconnect.entity.Professional;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
 public class MatchedProfessionalDTO {
     public Long id;
     public String name;
@@ -24,5 +28,4 @@ public class MatchedProfessionalDTO {
             this.skills = pro.skills.stream().map(skill -> skill.name).collect(Collectors.toList());
         }
     }
-    public MatchedProfessionalDTO() {}
 }

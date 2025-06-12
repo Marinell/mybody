@@ -4,10 +4,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import java.util.List;
 import jakarta.persistence.OneToMany;
+import lombok.Getter;
+import lombok.Setter;
 
 
 @Entity
 @Table(name = "clients")
+@Getter
+@Setter
 public class Client extends User {
 
     // Client-specific attributes can be added here if any in the future

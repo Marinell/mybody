@@ -4,11 +4,15 @@ import com.fitconnect.entity.UserRole;
 import org.jboss.resteasy.reactive.PartType;
 import org.jboss.resteasy.reactive.RestForm;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import jakarta.ws.rs.core.MediaType;
 import java.util.List;
 import java.util.Map;
 
+@Data
+@NoArgsConstructor
 public class ProfessionalRegisterRequest {
 
     @RestForm("name")

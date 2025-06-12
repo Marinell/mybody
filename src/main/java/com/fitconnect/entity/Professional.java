@@ -3,9 +3,13 @@ package com.fitconnect.entity;
 import jakarta.persistence.*;
 import java.util.List;
 import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "professionals")
+@Getter
+@Setter
 public class Professional extends User {
 
     public String profession;

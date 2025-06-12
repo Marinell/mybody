@@ -3,9 +3,19 @@ package com.fitconnect.entity;
 import jakarta.persistence.*;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import java.util.List;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Entity
 @Table(name = "skills")
+@Getter
+@Setter
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = false, exclude = "professionals") // callSuper = false as PanacheEntityBase has no fields for equals/hashCode by default
+@ToString(exclude = "professionals")
 public class Skill extends PanacheEntityBase {
 
     @Id
@@ -17,29 +27,4 @@ public class Skill extends PanacheEntityBase {
 
     @ManyToMany(mappedBy = "skills", fetch = FetchType.LAZY)
     public List<Professional> professionals;
-
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public List<Professional> getProfessionals() {
-        return professionals;
-    }
-
-    public void setProfessionals(List<Professional> professionals) {
-        this.professionals = professionals;
-    }
 }
