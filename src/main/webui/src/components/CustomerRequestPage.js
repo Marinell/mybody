@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { apiClient, getUserInfo, logout } from '../../js/app';
+import { apiClient, getUserInfo, logout } from '../services/app';
 
 const CustomerRequestPage = () => {
   const [userInfo, setUserInfo] = useState(null);

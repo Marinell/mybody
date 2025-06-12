@@ -17,10 +17,10 @@ import ProtectedRoute from './components/ProtectedRoute'; // Import ProtectedRou
 
 
 function App() {
-  const basename = process.env.PUBLIC_URL || "/";
+  // const basename = process.env.PUBLIC_URL || "/";
 
   return (
-    <Router basename={basename}>
+    // <Router basename={basename}>
       <div>
         <nav style={{ backgroundColor: '#333', padding: '1rem' }}>
           <ul style={{ listStyle: 'none', display: 'flex', justifyContent: 'space-around', margin: 0, padding: 0, flexWrap: 'wrap' }}>
@@ -103,7 +103,7 @@ function App() {
           </Routes>
         </div>
       </div>
-    </Router>
+    // </Router>
   );
 }
 

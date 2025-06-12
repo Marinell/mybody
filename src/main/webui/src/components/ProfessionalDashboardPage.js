@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { apiClient } from '../../js/app'; // apiClient is still fine to import directly
-import { useAuth } from '../../context/AuthContext'; // Import useAuth
+import { apiClient } from '../services/app'; // apiClient is still fine to import directly
+import { useAuth } from '../context/AuthContext'; // Import useAuth
 import { useNavigate, Link } from 'react-router-dom'; // Link for sidebar items
 
 // Placeholder SVGs - in a real app, these would be imported or handled better

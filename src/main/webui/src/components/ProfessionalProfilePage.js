@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { apiClient, getUserInfo, logout } from '../../js/app'; // Adjusted path
+import { apiClient, getUserInfo, logout } from '../services/app'; // Adjusted path
 import { useNavigate, Link } from 'react-router-dom'; // Added Link
 
 const ProfessionalProfilePage = () => {

@@ -10,7 +10,7 @@ import {
     removeUserInfo as removeStoredUserInfo,   // Renamed for clarity
     isLoggedIn as checkIsLoggedIn, // Direct use from app.js
     logout as baseLogout // The logout from app.js that clears storage
-} from '../../js/app'; // Path to your app.js utilities
+} from '../services/app'; // Path to your app.js utilities
 
 const AuthContext = createContext(null);
 
