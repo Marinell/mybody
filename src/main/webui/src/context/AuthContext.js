@@ -32,24 +32,26 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const login = async (email, password, userType = 'client') => {
-        const endpoint = userType === 'professional' ? '/auth/login/professional' : '/auth/login/client';
+        // const endpoint = userType === 'professional' ? '/auth/login/professional' : '/auth/login/client';
+        const endpoint ='/auth/login';
         try {
             const data = await apiClient(endpoint, 'POST', { email, password });
-            if (data.token && data.user) { // Ensure token and user are returned
+            if (data.token) { // Ensure token
                 storeAuthToken(data.token);
-                storeUserInfo(data.user); // data.user should be { id, email, role, name (optional) }
+                var user = {"email": data.email, "role": data.role, "userId": data.userId};
+                storeUserInfo(user); // user should be { id, email, role, name (optional) }
                 setToken(data.token);
-                setCurrentUser(data.user);
+                setCurrentUser(user);
 
                 // Navigate based on role
-                if (data.user.role === 'PROFESSIONAL') {
+                if (user.role === 'PROFESSIONAL') {
                     navigate('/professional-dashboard');
-                } else if (data.user.role === 'CLIENT') {
+                } else if (user.role === 'CLIENT') {
                     navigate('/customer-request');
                 } else {
                     navigate('/'); // Fallback navigation
                 }
-                return data.user;
+                return user;
             } else {
                 throw new Error(data.message || "Login failed: No token or user info returned.");
             }
