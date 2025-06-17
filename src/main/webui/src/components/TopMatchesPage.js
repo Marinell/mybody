@@ -68,46 +68,52 @@ const TopMatchesPage = () => {
 
   // Simplified JSX
   return (
-    <div style={{ fontFamily: 'Manrope, "Noto Sans", sans-serif', backgroundColor: '#101323', color: 'white', minHeight: '100vh' }}>
-      <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #21284a', padding: '0.75rem 2.5rem' }}>
-        <Link to="/" style={{textDecoration: 'none', color: 'white'}}><div style={{display: 'flex', alignItems: 'center', gap: '1rem'}}><h2>FitConnect</h2></div></Link>
-        {/* Header buttons can be added here if needed */}
-        <button onClick={logout} style={{color: 'white', background: 'none', border: 'none', cursor: 'pointer'}}>Logout</button>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}> {/* Rely on global body for theme */}
+      <header className="app-header">
+        <Link to="/" className="app-header-title"><h2>FitConnect</h2></Link>
+        <button onClick={logout} className="logout-nav-button">Logout</button>
       </header>
-      <main style={{ display: 'flex', justifyContent: 'center', padding: '1.25rem 2.5rem' }}>
-        <div style={{ width: '100%', maxWidth: '960px' }}>
-          <h2 style={{ fontSize: '32px', fontWeight: 'bold', padding: '1rem' }}>Top matches for your request</h2>
+      <main className="main-container">
+        {/* Using content-container but overriding max-width for a wider list area */}
+        <div className="content-container" style={{maxWidth: '960px'}}>
+          <h2 className="dashboard-title" style={{textAlign: 'left', paddingBottom: '1rem'}}>Top matches for your request</h2>
+
           {pageMessage && (
-            <div style={{ textAlign: 'center', padding: '0.75rem', margin: '1rem', borderRadius: '0.5rem', color: 'white', backgroundColor: pageMessage.includes('failed') || pageMessage.includes('Cannot') ? '#EF4444' : '#10B981' }}>
+            <div className={pageMessage.includes('failed') || pageMessage.includes('Cannot') || pageMessage.includes('not found') ? 'error-message' : 'success-message'} style={{marginBottom: '1rem'}}>
               {pageMessage}
             </div>
           )}
-          <div style={{padding: '1rem'}}>
-            <h3 style={{fontSize: '1.125rem', fontWeight: 'bold'}}>Ranking criteria</h3>
-            <p style={{fontSize: '0.875rem', color: '#a0aec0'}}>{rankingCriteria}</p>
+
+          <div style={{paddingBottom: '1.5rem'}}> {/* Using custom padding for this section */}
+            <h3 className="data-list-title" style={{paddingTop: '0', paddingBottom: '0.5rem'}}>Ranking criteria</h3>
+            <p className="form-subtext" style={{textAlign: 'left', padding: '0'}}>{rankingCriteria}</p>
           </div>
 
-          <h3 style={{fontSize: '1.125rem', fontWeight: 'bold', padding: '1rem 1rem 0.5rem 1rem'}}>Top matches</h3>
-          <div style={{display: 'flex', flexDirection: 'column', gap: '0.75rem', padding: '0.5rem 1rem'}}>
-            {matches.length === 0 && !pageMessage.includes('failed') && <p>Loading matches or no matches found...</p>}
+          <h3 className="data-list-title" style={{paddingTop: '0', paddingBottom: '0.5rem'}}>Top matches</h3>
+          <div> {/* Removed flex, flex-direction, gap, padding from this div, relying on match-card margin */}
+            {matches.length === 0 && !pageMessage.toLowerCase().includes('failed') &&
+              <p className="data-list-empty-message" style={{marginTop:'0'}}>Loading matches or no matches found...</p>
+            }
             {matches.map(prof => (
-              <div key={prof.id} style={{ display: 'flex', gap: '1rem', backgroundColor: '#181d35', padding: '1rem', borderRadius: '0.5rem', alignItems: 'center', justifyContent: 'space-between' }}>
-                <div style={{width: '70px', height: '70px', borderRadius: '50%', backgroundColor: '#333'}}> {/* Placeholder for image */}</div>
-                <div style={{flexGrow: 1}}>
-                  <p style={{fontSize: '1.125rem', fontWeight: '500'}}>{prof.name}</p>
-                  <p style={{fontSize: '0.875rem', color: '#a0aec0'}}>{prof.profession} | {prof.yearsOfExperience || 'N/A'} yrs exp.</p>
-                  <p style={{fontSize: '0.875rem', color: '#cbd5e0', marginTop: '0.25rem'}}>{prof.summarizedSkills || prof.aboutYouSummary || 'No summary.'}</p>
-                  {prof.skills && prof.skills.length > 0 && <p style={{fontSize: '0.75rem', color: '#718096', marginTop: '0.25rem'}}>Skills: {prof.skills.join(', ')}</p>}
+              <div key={prof.id} className="match-card">
+                <div className="match-image-placeholder">
+                  {/* Display initials or a generic icon if no profileImageUrl */}
+                  {prof.profileImageUrl ? <img src={prof.profileImageUrl} alt={prof.name} style={{width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover'}} /> : prof.name?.substring(0,1).toUpperCase()}
                 </div>
-                <div style={{display: 'flex', flexDirection: 'column', gap: '0.5rem', alignItems: 'flex-end'}}>
-                  <Link to={`/professional-profile-view/${prof.id}`} /* Placeholder for actual profile view route */
-                        className="flex min-w-[84px] max-w-[150px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-8 px-4 bg-[#21284a] text-white text-xs font-medium leading-normal w-full no-underline">
+                <div className="match-details">
+                  <p className="match-name">{prof.name}</p>
+                  <p className="match-info">{prof.profession} | {prof.yearsOfExperience || 'N/A'} yrs exp.</p>
+                  <p className="match-summary">{prof.summarizedSkills || prof.aboutYouSummary || 'No summary available.'}</p>
+                  {prof.skills && prof.skills.length > 0 && <p className="match-skills">Skills: {prof.skills.join(', ')}</p>}
+                </div>
+                <div className="match-actions">
+                  <Link to={`/professional-profile-view/${prof.id}`} className="button-outline">
                         View Profile
                   </Link>
                   <button
                     onClick={() => handleSelectProfessional(prof.id)}
-                    disabled={selectedProfessionalId || prof.selectionAttempted} // Disable if any selection is made or attempted
-                    style={{ minWidth: '84px', maxWidth: '150px', cursor: 'pointer', height: '2rem', padding: '0 1rem', borderRadius: '9999px', backgroundColor: (selectedProfessionalId || prof.selectionAttempted) ? '#4A5568' : '#607afb', color: 'white', fontSize: '0.75rem', fontWeight: '500', width: '100%', border: 'none'}}
+                    disabled={selectedProfessionalId || prof.selectionAttempted}
+                    className="form-button" style={{fontSize: '0.75rem', padding: '0.5rem 1rem'}} // Smaller font and padding for this context
                   >
                     {selectedProfessionalId === prof.id ? 'Selecting...' : (prof.selectionAttempted ? 'Selection Made' : 'Select This Pro')}
                   </button>

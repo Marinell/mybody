@@ -22,25 +22,26 @@ function App() {
   return (
     // <Router basename={basename}>
       <div>
-        <nav style={{ backgroundColor: '#333', padding: '1rem' }}>
-          <ul style={{ listStyle: 'none', display: 'flex', justifyContent: 'space-around', margin: 0, padding: 0, flexWrap: 'wrap' }}>
-            <li style={{ margin: '0.5rem' }}><Link to="/" style={{ color: 'white', textDecoration: 'none' }}>Home</Link></li>
-            <li style={{ margin: '0.5rem' }}><Link to="/login?userType=client" style={{ color: 'white', textDecoration: 'none' }}>Login Client</Link></li>
-            <li style={{ margin: '0.5rem' }}><Link to="/login?userType=professional" style={{ color: 'white', textDecoration: 'none' }}>Login Pro</Link></li>
-            <li style={{ margin: '0.5rem' }}><Link to="/signup-client" style={{ color: 'white', textDecoration: 'none' }}>Signup Client</Link></li>
-            <li style={{ margin: '0.5rem' }}><Link to="/signup-professional" style={{ color: 'white', textDecoration: 'none' }}>Signup Pro</Link></li>
-            <li style={{ margin: '0.5rem' }}><Link to="/professional-dashboard" style={{ color: 'white', textDecoration: 'none' }}>Pro Dashboard</Link></li>
-            <li style={{ margin: '0.5rem' }}><Link to="/customer-request" style={{ color: 'white', textDecoration: 'none' }}>New Request</Link></li>
-            <li style={{ margin: '0.5rem' }}><Link to="/professional-profile" style={{ color: 'white', textDecoration: 'none' }}>Edit Pro Profile</Link></li>
-            <li style={{ margin: '0.5rem' }}><Link to="/appointment-requests" style={{ color: 'white', textDecoration: 'none' }}>Appt. Requests</Link></li>
-            <li style={{ margin: '0.5rem' }}><Link to="/professional-profile-verification" style={{ color: 'white', textDecoration: 'none' }}>Verification</Link></li>
-            <li style={{ margin: '0.5rem' }}><LogoutButton className="logout-nav-button" /></li>
+        <nav className="app-nav">
+          <ul>
+            <li><Link to="/">Home</Link></li>
+            <li><Link to="/login?userType=client">Login Client</Link></li>
+            <li><Link to="/login?userType=professional">Login Pro</Link></li>
+            <li><Link to="/signup-client">Signup Client</Link></li>
+            <li><Link to="/signup-professional">Signup Pro</Link></li>
+            <li><Link to="/professional-dashboard">Pro Dashboard</Link></li>
+            <li><Link to="/customer-request">New Request</Link></li>
+            <li><Link to="/professional-profile">Edit Pro Profile</Link></li>
+            <li><Link to="/appointment-requests">Appt. Requests</Link></li>
+            <li><Link to="/professional-profile-verification">Verification</Link></li>
+            <li><LogoutButton className="logout-nav-button" /></li>
+            {/* Ensure LogoutButton correctly forwards className or uses app-nav button styles internally */}
           </ul>
         </nav>
 
-        <hr />
+        {/* <hr /> REMOVED as app-nav should provide separation */}
 
-        <div style={{ padding: '1rem' }}>
+        <div> {/* Padding removed, global styles should handle this or use a main-container type class if specific padding needed */}
           <Routes>
             {/* Public Routes */}
             <Route path="/login" element={<LoginPage />} />

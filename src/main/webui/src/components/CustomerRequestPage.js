@@ -80,30 +80,29 @@ const CustomerRequestPage = () => {
 
   // Simplified JSX, Tailwind classes omitted for brevity.
   return (
-    <div style={{ fontFamily: 'Manrope, "Noto Sans", sans-serif', backgroundColor: '#101323', color: 'white', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #21284a', padding: '0.75rem 2.5rem' }}>
-        <Link to="/" style={{textDecoration: 'none', color: 'white'}}><div style={{display: 'flex', alignItems: 'center', gap: '1rem'}}><div style={{width: '1rem', height: '1rem' /* SVG Placeholder */}}></div><h2>FitConnect</h2></div></Link>
-        <div style={{display: 'flex', alignItems: 'center', gap: '1rem'}}>
-            <button onClick={logout} style={{color: 'white', background: 'none', border: 'none', cursor: 'pointer'}}>Logout</button>
-            {/* Notification Bell and User Avatar Placeholder */}
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}> {/* Global body styles for theme, flex for layout */}
+      <header className="app-header">
+        <Link to="/" className="app-header-title"><h2>FitConnect</h2></Link>
+        <div> {/* Container for right-side header items */}
+          {/* Use a class that mimics app-nav button/link for logout */}
+          <button onClick={logout} className="logout-nav-button">Logout</button>
+          {/* Notification Bell and User Avatar Placeholder can be added here with appropriate classes */}
         </div>
       </header>
-      <main style={{ display: 'flex', flex: 1, justifyContent: 'center', padding: '1.25rem 2.5rem' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '512px' }}>
-          <div style={{padding: '1rem'}}>
-            <p style={{fontSize: '32px', fontWeight: 'bold'}}>What do you need help with?</p>
-          </div>
+      <main className="main-container">
+        <div className="content-container">
+          {/* Removed extra padding div, form-title class will handle title styling */}
+          <h2 className="form-title">What do you need help with?</h2>
           {message && (
-            <div style={{ textAlign: 'center', padding: '0.5rem', margin: '0 1rem', color: message.includes('success') ? 'lightgreen' : 'orangered' }}>
+            <div className={message.includes('success') ? 'success-message' : 'error-message'}>
               {message}
             </div>
           )}
-          <form onSubmit={handleSubmit} style={{ padding: '0.75rem 1rem' }}>
-            <div style={{ marginBottom: '1rem' }}>
-              <label htmlFor="category" style={{display:'block', paddingBottom: '0.5rem'}}>Category</label>
-              <select name="category" id="categorySelect" value={formData.category} onChange={handleChange} required style={{width: '100%', padding: '0.875rem', borderRadius: '0.75rem', backgroundColor: '#181d35', border: '1px solid #2f396a', color: 'white'}}>
+          <form onSubmit={handleSubmit}> {/* Removed inline padding */}
+            <div className="form-group">
+              <label htmlFor="categorySelect" className="form-label">Category</label>
+              <select name="category" id="categorySelect" value={formData.category} onChange={handleChange} required className="form-select">
                 <option value="one">Select a category</option>
-                {/* Populate with actual categories later if dynamic */}
                 <option value="FITNESS_COACHING">Fitness Coaching</option>
                 <option value="NUTRITION_CONSULTATION">Nutrition Consultation</option>
                 <option value="YOGA_INSTRUCTION">Yoga Instruction</option>
@@ -111,23 +110,22 @@ const CustomerRequestPage = () => {
                 <option value="WELLNESS_PROGRAM">Wellness Program</option>
               </select>
             </div>
-            <div style={{ marginBottom: '1rem' }}>
-              <label htmlFor="service" style={{display:'block', paddingBottom: '0.5rem'}}>Service (Optional)</label>
-              <select name="service" id="serviceSelect" value={formData.service} onChange={handleChange} style={{width: '100%', padding: '0.875rem', borderRadius: '0.75rem', backgroundColor: '#181d35', border: '1px solid #2f396a', color: 'white'}}>
+            <div className="form-group">
+              <label htmlFor="serviceSelect" className="form-label">Service (Optional)</label>
+              <select name="service" id="serviceSelect" value={formData.service} onChange={handleChange} className="form-select">
                 <option value="one">Select a service (optional)</option>
-                {/* Populate based on category or general list */}
                  <option value="PERSONAL_TRAINING">Personal Training</option>
                  <option value="DIET_PLANNING">Diet Planning</option>
                  <option value="GROUP_YOGA">Group Yoga</option>
               </select>
             </div>
-            <div style={{ marginBottom: '1rem' }}>
-              <label htmlFor="description" style={{display:'block', paddingBottom: '0.5rem'}}>Describe your needs</label>
-              <textarea name="description" id="descriptionTextarea" value={formData.description} onChange={handleChange} required placeholder="Describe your needs" style={{width: '100%', minHeight: '6rem', padding: '0.875rem', borderRadius: '0.75rem', backgroundColor: '#181d35', border: '1px solid #2f396a', color: 'white'}}></textarea>
+            <div className="form-group">
+              <label htmlFor="descriptionTextarea" className="form-label">Describe your needs</label>
+              <textarea name="description" id="descriptionTextarea" value={formData.description} onChange={handleChange} required placeholder="Describe your needs" className="form-textarea"></textarea>
             </div>
-            <div style={{ marginBottom: '1rem' }}>
-              <label htmlFor="budget" style={{display:'block', paddingBottom: '0.5rem'}}>Budget (Optional)</label>
-              <select name="budget" id="budgetSelect" value={formData.budget} onChange={handleChange} style={{width: '100%', padding: '0.875rem', borderRadius: '0.75rem', backgroundColor: '#181d35', border: '1px solid #2f396a', color: 'white'}}>
+            <div className="form-group">
+              <label htmlFor="budgetSelect" className="form-label">Budget (Optional)</label>
+              <select name="budget" id="budgetSelect" value={formData.budget} onChange={handleChange} className="form-select">
                 <option value="one">Select your budget (optional)</option>
                 <option value="UNDER_50">$ Under 50</option>
                 <option value="50_100">$50 - $100</option>
@@ -135,9 +133,10 @@ const CustomerRequestPage = () => {
                 <option value="ABOVE_200">$ Above 200</option>
               </select>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '0.75rem 0' }}>
-              <button type="submit" style={{ padding: '0.5rem 1rem', borderRadius: '9999px', backgroundColor: '#607afb', color: 'white', fontWeight: 'bold', cursor: 'pointer' }}>
-                Submit
+            {/* form-group can also be used for button container for consistent spacing if desired */}
+            <div className="form-group" style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <button type="submit" className="form-button" style={{width: 'auto'}}> {/* form-button for base, inline for auto width */}
+                Submit Request
               </button>
             </div>
           </form>
