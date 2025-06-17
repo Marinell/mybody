@@ -2,12 +2,14 @@ package com.fitconnect.resource;
 
 import com.fitconnect.dto.LoginRequest;
 import com.fitconnect.dto.LoginResponse;
+import com.fitconnect.dto.ProfessionalRegisterRequest;
 import com.fitconnect.dto.RegisterRequest;
 import com.fitconnect.entity.User;
 import com.fitconnect.service.AdminService;
 import com.fitconnect.service.AuthService;
 
 import jakarta.inject.Inject;
+import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -48,6 +50,23 @@ public class AuthResource {
             return Response.ok(loginResponse.get()).build();
         } else {
             return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid email or password").build();
+        }
+    }
+
+    @POST
+    @Path("/register/professional")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response registerProfessional(@BeanParam ProfessionalRegisterRequest request) {
+        try {
+            // Assuming authService.registerProfessional(request) returns the registered professional entity
+            Object professional = authService.registerProfessional(request);
+            return Response.status(Response.Status.CREATED).entity(professional).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        } catch (Exception e) {
+            // Log the exception for debugging purposes
+            // Logger.getLogger(AuthResource.class).error("Professional registration failed", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Professional registration failed: An unexpected error occurred.").build();
         }
     }
 }

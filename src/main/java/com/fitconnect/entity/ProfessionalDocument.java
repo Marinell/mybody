@@ -1,5 +1,6 @@
 package com.fitconnect.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import lombok.Getter;
@@ -15,13 +16,61 @@ public class ProfessionalDocument extends PanacheEntityBase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
+    private Long id; // Changed to private as good practice, with Panache providing accessors
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "professional_id", nullable = false)
-    public Professional professional;
+    private Professional professional; // Changed to private
 
-    public String fileName;
-    public String fileType; // e.g., application/pdf, image/jpeg
-    public String storagePath; // Path where the file is stored
+    private String fileName;
+    private String fileType; // e.g., application/pdf, image/jpeg
+
+    @JsonIgnore
+    @Lob // For large binary data
+    @Column(columnDefinition="BLOB")
+    private byte[] fileContent;
+
+    // PanacheEntityBase provides id getter/setter.
+    // Lombok @Getter @Setter will handle getters and setters for other fields.
+    // Explicit getters/setters for clarity or if specific logic is needed later:
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Professional getProfessional() {
+        return professional;
+    }
+
+    public void setProfessional(Professional professional) {
+        this.professional = professional;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getFileType() {
+        return fileType;
+    }
+
+    public void setFileType(String fileType) {
+        this.fileType = fileType;
+    }
+
+    public byte[] getFileContent() {
+        return fileContent;
+    }
+
+    public void setFileContent(byte[] fileContent) {
+        this.fileContent = fileContent;
+    }
 }
