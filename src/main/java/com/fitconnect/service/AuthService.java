@@ -1,14 +1,14 @@
 package com.fitconnect.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fitconnect.dto.LoginRequest;
 import com.fitconnect.dto.LoginResponse;
+import com.fitconnect.dto.ProfessionalRegisterRequest;
 import com.fitconnect.dto.RegisterRequest;
-import com.fitconnect.entity.Client;
-import com.fitconnect.entity.Professional;
-import com.fitconnect.entity.User;
-import com.fitconnect.entity.UserRole;
-
+import com.fitconnect.entity.*;
 import io.smallrye.jwt.build.Jwt;
+import org.jboss.resteasy.reactive.multipart.FileUpload;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -26,11 +26,17 @@ import org.wildfly.security.password.util.ModularCrypt;
 
 
 import java.security.InvalidKeyException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -148,8 +154,6 @@ public class AuthService {
     }
 
     @Transactional
-
-
     public Optional<LoginResponse> login(LoginRequest request) {
         Optional<User> userOptional = User.find("email", request.getEmail()).firstResultOptional();
         LOG.infof("searching user: " + request.getEmail());
@@ -171,5 +175,64 @@ public class AuthService {
         }
         LOG.infof("user NOT found");
         return Optional.empty();
+    }
+
+    @Transactional
+    public Professional registerProfessional(ProfessionalRegisterRequest request) {
+        if (User.find("email", request.getEmail()).firstResultOptional().isPresent()) {
+            throw new IllegalArgumentException("Email already exists");
+        }
+
+        Professional professional = new Professional();
+        professional.setName(request.getName());
+        professional.setEmail(request.getEmail());
+        professional.setPassword(hashPassword(request.getPassword()));
+        professional.setPhoneNumber(request.getPhoneNumber());
+        professional.setProfession(request.getProfession());
+        professional.setAddress(request.getAddress());
+        professional.setPostalCode(request.getPostalCode());
+        professional.setYearsOfExperience(request.getYearsOfExperience());
+        professional.setQualifications(request.getQualifications());
+        professional.setAboutYou(request.getAboutYou());
+
+        if (request.getSocialMediaLinksJson() != null && !request.getSocialMediaLinksJson().isEmpty()) {
+            try {
+                ObjectMapper objectMapper = new ObjectMapper();
+                Map<String, String> socialMediaLinks = objectMapper.readValue(request.getSocialMediaLinksJson(), Map.class);
+                professional.setSocialMediaLinks(socialMediaLinks);
+            } catch (JsonProcessingException e) {
+                LOG.error("Error parsing social media links JSON", e);
+                // Depending on requirements, you might want to let the registration fail
+                // or proceed without social media links. For now, re-throwing as a runtime exception.
+                throw new RuntimeException("Invalid social media links format", e);
+            }
+        }
+
+        if (request.getDocuments() != null) {
+            if (professional.getDocuments() == null) {
+                professional.setDocuments(new ArrayList<>());
+            }
+            for (FileUpload documentUpload : request.getDocuments()) {
+                try {
+                    ProfessionalDocument document = new ProfessionalDocument();
+                    document.setProfessional(professional);
+                    document.setFileName(documentUpload.fileName());
+                    document.setFileType(documentUpload.contentType());
+                    document.setFileContent(Files.readAllBytes(documentUpload.uploadedFile()));
+                    professional.getDocuments().add(document);
+                } catch (IOException e) {
+                    LOG.error("Error reading uploaded document: " + documentUpload.fileName(), e);
+                    // Decide on error handling: skip this file, fail the registration, etc.
+                    // For now, re-throwing as a runtime exception to indicate failure.
+                    throw new RuntimeException("Error processing uploaded document: " + documentUpload.fileName(), e);
+                }
+            }
+        }
+
+        professional.setRole(UserRole.PROFESSIONAL);
+        professional.setProfileStatus(ProfileStatus.PENDING_VERIFICATION);
+
+        professional.persist();
+        return professional;
     }
 }
