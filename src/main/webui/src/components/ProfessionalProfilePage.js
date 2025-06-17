@@ -78,7 +78,7 @@ const ProfessionalProfilePage = () => {
       setIsLoading(false);
     };
     fetchProfile();
-  }, [navigate, userInfo]); // Removed userInfo from dep array as it causes re-fetch on state change
+  }, []); // Removed userInfo and navigate from dep array
 
   const handleChange = (e) => {
     setProfileData({ ...profileData, [e.target.name]: e.target.value });
