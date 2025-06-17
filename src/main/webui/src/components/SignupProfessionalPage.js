@@ -100,49 +100,111 @@ const SignupProfessionalPage = () => {
   // Simplified JSX structure, Tailwind classes omitted for brevity.
   // Styles are inline for consistency.
   return (
-    <div style={{ fontFamily: 'Manrope, "Noto Sans", sans-serif', backgroundColor: 'white', color: '#121217', minHeight: '100vh' }}>
-      <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #f0f1f4', padding: '0.75rem 2.5rem' }}>
-      <Link to="/" style={{textDecoration: 'none', color: '#121217'}}><h2>FitConnect</h2></Link>
-        <Link to="/login?userType=professional" style={{ color: '#121217', fontSize: '0.875rem', fontWeight: '500', textDecoration: 'none' }}>Log In</Link>
+    // Main div uses global body styles for background, font, text color. Flex column layout.
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <header className="app-header">
+        <Link to="/" className="app-header-title"><h2>FitConnect</h2></Link>
+        <Link to="/login?userType=professional">Log In</Link>
       </header>
-      <main style={{ display: 'flex', justifyContent: 'center', padding: '1.25rem 2.5rem' }}>
-        <div style={{ width: '100%', maxWidth: '512px' }}>
-          <h2 style={{ fontSize: '32px', fontWeight: 'bold', textAlign: 'center', padding: '1rem' }}>Become a Pro</h2>
+      <main className="main-container">
+        <div className="content-container"> {/* Max width is 512px by default from content-container */}
+          <h2 className="form-title">Become a Pro</h2>
           {message && (
-            <div style={{ textAlign: 'center', padding: '0.75rem', margin: '1rem 0', borderRadius: '0.5rem', color: 'white', backgroundColor: message.includes('successful') ? '#10B981' : '#EF4444' }}>
+            <div className={message.includes('successful') ? 'success-message' : 'error-message'}>
               {message}
             </div>
           )}
-          <form onSubmit={handleSubmit} style={{ padding: '0.75rem 1rem', marginTop: '1rem' }}>
-            <div style={{ marginBottom: '1rem' }}><label>Full Name: <input type="text" name="name" value={formData.name} onChange={handleChange} required style={{width: '100%', padding: '0.5rem', backgroundColor: '#f0f1f4', border: '1px solid #e2e8f0', borderRadius: '0.375rem' }} /></label></div>
-            <div style={{ marginBottom: '1rem' }}><label>Email: <input type="email" name="email" value={formData.email} onChange={handleChange} required style={{width: '100%', padding: '0.5rem', backgroundColor: '#f0f1f4', border: '1px solid #e2e8f0', borderRadius: '0.375rem' }}/></label></div>
-            <div style={{ marginBottom: '1rem' }}><label>Password: <input type="password" name="password" value={formData.password} onChange={handleChange} required style={{width: '100%', padding: '0.5rem', backgroundColor: '#f0f1f4', border: '1px solid #e2e8f0', borderRadius: '0.375rem' }} /></label></div>
-            <div style={{ marginBottom: '1rem' }}><label>Confirm Password: <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required style={{width: '100%', padding: '0.5rem', backgroundColor: '#f0f1f4', border: '1px solid #e2e8f0', borderRadius: '0.375rem' }}/></label></div>
-            <div style={{ marginBottom: '1rem' }}><label>Phone Number: <input type="tel" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} style={{width: '100%', padding: '0.5rem', backgroundColor: '#f0f1f4', border: '1px solid #e2e8f0', borderRadius: '0.375rem' }}/></label></div>
-            <div style={{ marginBottom: '1rem' }}><label>Profession: <input type="text" name="profession" value={formData.profession} onChange={handleChange} required style={{width: '100%', padding: '0.5rem', backgroundColor: '#f0f1f4', border: '1px solid #e2e8f0', borderRadius: '0.375rem' }} /></label></div>
-            <div style={{ marginBottom: '1rem' }}><label>Address: <input type="text" name="address" value={formData.address} onChange={handleChange} required style={{width: '100%', padding: '0.5rem', backgroundColor: '#f0f1f4', border: '1px solid #e2e8f0', borderRadius: '0.375rem' }}/></label></div>
-            <div style={{ marginBottom: '1rem' }}><label>Postal Code: <input type="text" name="postalCode" value={formData.postalCode} onChange={handleChange} required style={{width: '100%', padding: '0.5rem', backgroundColor: '#f0f1f4', border: '1px solid #e2e8f0', borderRadius: '0.375rem' }}/></label></div>
-            <div style={{ marginBottom: '1rem' }}><label>Years of Experience: <input type="number" name="yearsOfExperience" value={formData.yearsOfExperience} onChange={handleChange} required style={{width: '100%', padding: '0.5rem', backgroundColor: '#f0f1f4', border: '1px solid #e2e8f0', borderRadius: '0.375rem' }}/></label></div>
-            <div style={{ marginBottom: '1rem' }}><label>Qualifications: <textarea name="qualifications" value={formData.qualifications} onChange={handleChange} required style={{width: '100%', padding: '0.5rem', backgroundColor: '#f0f1f4', border: '1px solid #e2e8f0', borderRadius: '0.375rem', minHeight: '3rem'}} /></label></div>
-            <div style={{ marginBottom: '1rem' }}><label>About You: <textarea name="aboutYou" value={formData.aboutYou} onChange={handleChange} required style={{width: '100%', padding: '0.5rem', backgroundColor: '#f0f1f4', border: '1px solid #e2e8f0', borderRadius: '0.375rem', minHeight: '3rem'}} /></label></div>
-
-            <div style={{ marginBottom: '1rem' }}><label>LinkedIn Profile: <input type="url" name="linkedinProfile" value={formData.linkedinProfile} onChange={handleChange} style={{width: '100%', padding: '0.5rem', backgroundColor: '#f0f1f4', border: '1px solid #e2e8f0', borderRadius: '0.375rem' }}/></label></div>
-            <div style={{ marginBottom: '1rem' }}><label>Website: <input type="url" name="website" value={formData.website} onChange={handleChange} style={{width: '100%', padding: '0.5rem', backgroundColor: '#f0f1f4', border: '1px solid #e2e8f0', borderRadius: '0.375rem' }}/></label></div>
-
-            <div style={{ margin: '1rem 0', padding: '1rem', border: '2px dashed #dcdee5', borderRadius: '0.5rem', textAlign: 'center' }}>
-              <p style={{fontWeight: 'bold'}}>Upload Documents</p>
-              <p style={{fontSize: '0.875rem'}}>Upload your certifications, licenses, etc.</p>
-              <label htmlFor="documents" style={{display: 'inline-block', cursor: 'pointer', backgroundColor: '#f0f1f4', padding: '0.5rem 1rem', borderRadius: '0.5rem', margin: '0.5rem 0', color: '#121317'}}>Choose Files</label>
-              <input type="file" id="documents" name="documents" multiple onChange={handleFileChange} style={{display: 'none'}} />
-              <div style={{fontSize: '0.875rem', color: '#656a86', marginTop: '0.5rem'}}>{fileListMessage}</div>
+          <form onSubmit={handleSubmit}> {/* Removed inline padding and margin */}
+            {/* Using label-flex-container for each form field */}
+            <div className="label-flex-container">
+              <label htmlFor="name">Full Name:</label>
+              <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required className="form-input" />
+            </div>
+            <div className="label-flex-container">
+              <label htmlFor="email">Email:</label>
+              <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required className="form-input" />
+            </div>
+            <div className="label-flex-container">
+              <label htmlFor="password">Password:</label>
+              <input type="password" id="password" name="password" value={formData.password} onChange={handleChange} required className="form-input" />
+            </div>
+            <div className="label-flex-container">
+              <label htmlFor="confirmPassword">Confirm Password:</label>
+              <input type="password" id="confirmPassword" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required className="form-input" />
+            </div>
+            <div className="label-flex-container">
+              <label htmlFor="phoneNumber">Phone Number:</label>
+              <input type="tel" id="phoneNumber" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} className="form-input" />
+            </div>
+            <div className="label-flex-container">
+              <label htmlFor="profession">Profession:</label>
+              <input type="text" id="profession" name="profession" value={formData.profession} onChange={handleChange} required className="form-input" />
+            </div>
+            <div className="label-flex-container">
+              <label htmlFor="address">Address:</label>
+              <input type="text" id="address" name="address" value={formData.address} onChange={handleChange} required className="form-input" />
+            </div>
+            <div className="label-flex-container">
+              <label htmlFor="postalCode">Postal Code:</label>
+              <input type="text" id="postalCode" name="postalCode" value={formData.postalCode} onChange={handleChange} required className="form-input" />
+            </div>
+            <div className="label-flex-container">
+              <label htmlFor="yearsOfExperience">Years of Experience:</label>
+              <input type="number" id="yearsOfExperience" name="yearsOfExperience" value={formData.yearsOfExperience} onChange={handleChange} required className="form-input" />
+            </div>
+            <div className="label-flex-container">
+              <label htmlFor="qualifications">Qualifications:</label>
+              <textarea id="qualifications" name="qualifications" value={formData.qualifications} onChange={handleChange} required className="form-textarea" />
+            </div>
+            <div className="label-flex-container">
+              <label htmlFor="aboutYou">About You:</label>
+              <textarea id="aboutYou" name="aboutYou" value={formData.aboutYou} onChange={handleChange} required className="form-textarea" />
             </div>
 
-            <button type="submit" style={{ width: '100%', padding: '0.75rem 1.25rem', borderRadius: '0.5rem', backgroundColor: '#3e58da', color: 'white', fontWeight: 'bold', cursor: 'pointer', border: 'none' }}>
-              Submit
+            <h3 className="form-title" style={{fontSize: '1.25rem', paddingTop: '1.5rem', paddingBottom: '1rem'}}>Social Links (Optional)</h3>
+            <div className="label-flex-container">
+              <label htmlFor="linkedinProfile">LinkedIn Profile:</label>
+              <input type="url" id="linkedinProfile" name="linkedinProfile" value={formData.linkedinProfile} onChange={handleChange} className="form-input" />
+            </div>
+            <div className="label-flex-container">
+              <label htmlFor="instagramProfile">Instagram Profile:</label>
+              <input type="url" id="instagramProfile" name="instagramProfile" value={formData.instagramProfile} onChange={handleChange} className="form-input" />
+            </div>
+            <div className="label-flex-container">
+              <label htmlFor="facebookProfile">Facebook Profile:</label>
+              <input type="url" id="facebookProfile" name="facebookProfile" value={formData.facebookProfile} onChange={handleChange} className="form-input" />
+            </div>
+            <div className="label-flex-container">
+              <label htmlFor="youtubeProfile">YouTube Profile:</label>
+              <input type="url" id="youtubeProfile" name="youtubeProfile" value={formData.youtubeProfile} onChange={handleChange} className="form-input" />
+            </div>
+            <div className="label-flex-container">
+              <label htmlFor="tiktokProfile">TikTok Profile:</label>
+              <input type="url" id="tiktokProfile" name="tiktokProfile" value={formData.tiktokProfile} onChange={handleChange} className="form-input" />
+            </div>
+            <div className="label-flex-container">
+              <label htmlFor="twitterProfile">Twitter Profile:</label>
+              <input type="url" id="twitterProfile" name="twitterProfile" value={formData.twitterProfile} onChange={handleChange} className="form-input" />
+            </div>
+            <div className="label-flex-container">
+              <label htmlFor="website">Website:</label>
+              <input type="url" id="website" name="website" value={formData.website} onChange={handleChange} className="form-input" />
+            </div>
+
+            <div className="file-upload-container">
+              <p style={{fontWeight: 'bold', color: 'white'}}>Upload Documents</p> {/* Adjusted text color */}
+              <p className="form-subtext" style={{paddingTop: '0', paddingBottom: '0.5rem'}}>Upload your certifications, licenses, etc.</p>
+              <label htmlFor="documents" className="file-upload-label">Choose Files</label>
+              <input type="file" id="documents" name="documents" multiple onChange={handleFileChange} style={{display: 'none'}} />
+              <div className="file-upload-list">{fileListMessage}</div>
+            </div>
+
+            <button type="submit" className="form-button">
+              Submit Application
             </button>
-            <p style={{fontSize: '0.875rem', textAlign: 'center', padding: '0.75rem 0'}}>By submitting, you agree to our Terms of Service and Privacy Policy.</p>
-             <p style={{ color: '#656a86', fontSize: '0.875rem', textAlign: 'center', paddingTop: '1rem' }}>
-                Already have an account? <Link to="/login?userType=professional" style={{textDecoration:'underline', color: '#656a86'}}>Login</Link>
+            <p className="form-subtext" style={{fontSize: '0.875rem', paddingTop: '0.75rem', paddingBottom: '0.75rem'}}>By submitting, you agree to our Terms of Service and Privacy Policy.</p>
+            <p className="form-subtext">
+                Already have an account? <Link to="/login?userType=professional">Login</Link>
             </p>
           </form>
         </div>

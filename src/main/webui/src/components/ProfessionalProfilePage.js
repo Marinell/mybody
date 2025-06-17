@@ -115,45 +115,108 @@ const ProfessionalProfilePage = () => {
     }
   };
 
-  if (isLoading) return <p style={{color: '#121317', textAlign: 'center', paddingTop: '2rem'}}>Loading profile...</p>;
+  if (isLoading) return <p className="form-subtext" style={{textAlign: 'center', paddingTop: '2rem'}}>Loading profile...</p>; // Using form-subtext for themed loading message
 
   // Simplified JSX structure for an editable form
   return (
-    <div style={{ fontFamily: 'Manrope, "Noto Sans", sans-serif', backgroundColor: 'white', color: '#121317', minHeight: '100vh' }}>
-      <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #f1f1f4', padding: '0.75rem 2.5rem' }}>
-        <Link to="/professional-dashboard" style={{textDecoration: 'none', color: '#121317'}}><h2>FitConnect Dashboard</h2></Link>
-        <button onClick={logout} style={{color: '#121317', background: 'none', border: 'none', cursor: 'pointer'}}>Logout</button>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}> {/* Global body styles for theme, flex for layout */}
+      <header className="app-header">
+        <Link to="/professional-dashboard" className="app-header-title"><h2>FitConnect Dashboard</h2></Link>
+        <button onClick={logout} className="logout-nav-button">Logout</button>
       </header>
-      <main style={{ display: 'flex', justifyContent: 'center', padding: '1.25rem 2.5rem' }}>
-        <div style={{ width: '100%', maxWidth: '768px' /* md:max-w-3xl */ }}>
-          <h2 style={{ fontSize: '2rem', fontWeight: 'bold', textAlign: 'center', padding: '1rem' }}>Edit Your Profile</h2>
+      <main className="main-container">
+        {/* content-container sets max-width to 512px, this page might need wider for better form layout.
+            Override content-container's max-width with an inline style or a new class if needed.
+            For now, we'll use content-container as is, which might make the form look a bit narrow. */}
+        <div className="content-container" style={{maxWidth: '768px'}}>
+          <h2 className="form-title">Edit Your Profile</h2>
           {message && (
-            <div style={{ textAlign: 'center', padding: '0.75rem', margin: '1rem 0', borderRadius: '0.5rem', color: 'white', backgroundColor: message.includes('success') ? '#10B981' : '#EF4444' }}>
+            <div className={message.includes('success') ? 'success-message' : 'error-message'}>
               {message}
             </div>
           )}
-          <form onSubmit={handleSubmit} style={{ padding: '0.75rem 1rem', marginTop: '1rem' }}>
-            {/* Example fields - add all relevant fields from profileData */}
-            <div style={{ marginBottom: '1rem' }}><label>Full Name: <input type="text" name="name" value={profileData.name} onChange={handleChange} style={{width: '100%', padding: '0.5rem', backgroundColor: '#f0f1f4'}}/></label></div>
-            <div style={{ marginBottom: '1rem' }}><label>Email: <input type="email" name="email" value={profileData.email} readOnly style={{width: '100%', padding: '0.5rem', backgroundColor: '#e0e0e0' /* Readonly field style */}} /></label></div>
-            <div style={{ marginBottom: '1rem' }}><label>Phone Number: <input type="tel" name="phoneNumber" value={profileData.phoneNumber} onChange={handleChange} style={{width: '100%', padding: '0.5rem', backgroundColor: '#f0f1f4'}}/></label></div>
-            <div style={{ marginBottom: '1rem' }}><label>Profession: <input type="text" name="profession" value={profileData.profession} onChange={handleChange} style={{width: '100%', padding: '0.5rem', backgroundColor: '#f0f1f4'}}/></label></div>
-            <div style={{ marginBottom: '1rem' }}><label>Address: <input type="text" name="address" value={profileData.address} onChange={handleChange} style={{width: '100%', padding: '0.5rem', backgroundColor: '#f0f1f4'}}/></label></div>
-            <div style={{ marginBottom: '1rem' }}><label>Postal Code: <input type="text" name="postalCode" value={profileData.postalCode} onChange={handleChange} style={{width: '100%', padding: '0.5rem', backgroundColor: '#f0f1f4'}}/></label></div>
-            <div style={{ marginBottom: '1rem' }}><label>Years of Experience: <input type="number" name="yearsOfExperience" value={profileData.yearsOfExperience} onChange={handleChange} style={{width: '100%', padding: '0.5rem', backgroundColor: '#f0f1f4'}}/></label></div>
-            <div style={{ marginBottom: '1rem' }}><label>Qualifications: <textarea name="qualifications" value={profileData.qualifications} onChange={handleChange} style={{width: '100%', padding: '0.5rem', backgroundColor: '#f0f1f4', minHeight: '3rem'}} /></label></div>
-            <div style={{ marginBottom: '1rem' }}><label>About You: <textarea name="aboutYou" value={profileData.aboutYou} onChange={handleChange} style={{width: '100%', padding: '0.5rem', backgroundColor: '#f0f1f4', minHeight: '3rem'}} /></label></div>
-            <div style={{ marginBottom: '1rem' }}><label>Skills (comma-separated): <input type="text" name="skills" value={profileData.skills.join(', ')} onChange={handleSkillsChange} style={{width: '100%', padding: '0.5rem', backgroundColor: '#f0f1f4'}}/></label></div>
-            <div style={{ marginBottom: '1rem' }}><label>Profile Image URL: <input type="url" name="profileImageUrl" value={profileData.profileImageUrl} onChange={handleChange} style={{width: '100%', padding: '0.5rem', backgroundColor: '#f0f1f4'}}/></label></div>
+          <form onSubmit={handleSubmit}> {/* Removed inline padding and margin */}
+            <div className="label-flex-container">
+              <label htmlFor="name">Full Name:</label>
+              <input type="text" id="name" name="name" value={profileData.name} onChange={handleChange} className="form-input"/>
+            </div>
+            <div className="label-flex-container">
+              <label htmlFor="email">Email:</label>
+              <input type="email" id="email" name="email" value={profileData.email} readOnly className="form-input-readonly" />
+            </div>
+            <div className="label-flex-container">
+              <label htmlFor="phoneNumber">Phone Number:</label>
+              <input type="tel" id="phoneNumber" name="phoneNumber" value={profileData.phoneNumber} onChange={handleChange} className="form-input"/>
+            </div>
+            <div className="label-flex-container">
+              <label htmlFor="profession">Profession:</label>
+              <input type="text" id="profession" name="profession" value={profileData.profession} onChange={handleChange} className="form-input"/>
+            </div>
+            <div className="label-flex-container">
+              <label htmlFor="address">Address:</label>
+              <input type="text" id="address" name="address" value={profileData.address} onChange={handleChange} className="form-input"/>
+            </div>
+            <div className="label-flex-container">
+              <label htmlFor="postalCode">Postal Code:</label>
+              <input type="text" id="postalCode" name="postalCode" value={profileData.postalCode} onChange={handleChange} className="form-input"/>
+            </div>
+            <div className="label-flex-container">
+              <label htmlFor="yearsOfExperience">Years of Experience:</label>
+              <input type="number" id="yearsOfExperience" name="yearsOfExperience" value={profileData.yearsOfExperience} onChange={handleChange} className="form-input"/>
+            </div>
+            <div className="label-flex-container">
+              <label htmlFor="qualifications">Qualifications:</label>
+              <textarea id="qualifications" name="qualifications" value={profileData.qualifications} onChange={handleChange} className="form-textarea" />
+            </div>
+            <div className="label-flex-container">
+              <label htmlFor="aboutYou">About You:</label>
+              <textarea id="aboutYou" name="aboutYou" value={profileData.aboutYou} onChange={handleChange} className="form-textarea" />
+            </div>
+            <div className="label-flex-container">
+              <label htmlFor="skills">Skills (comma-separated):</label>
+              <input type="text" id="skills" name="skills" value={profileData.skills.join(', ')} onChange={handleSkillsChange} className="form-input"/>
+            </div>
+            <div className="label-flex-container">
+              <label htmlFor="profileImageUrl">Profile Image URL:</label>
+              <input type="url" id="profileImageUrl" name="profileImageUrl" value={profileData.profileImageUrl} onChange={handleChange} className="form-input"/>
+            </div>
 
-            <h3 style={{fontSize: '1.25rem', fontWeight: 'bold', marginTop: '1.5rem', marginBottom: '0.5rem'}}>Social & Web Links</h3>
-            <div style={{ marginBottom: '1rem' }}><label>LinkedIn: <input type="url" name="linkedinProfile" value={profileData.linkedinProfile} onChange={handleChange} style={{width: '100%', padding: '0.5rem', backgroundColor: '#f0f1f4'}}/></label></div>
-            <div style={{ marginBottom: '1rem' }}><label>Website: <input type="url" name="website" value={profileData.website} onChange={handleChange} style={{width: '100%', padding: '0.5rem', backgroundColor: '#f0f1f4'}}/></label></div>
-            {/* Add other social media inputs similarly */}
+            {/* Using form-title for subtitle, with adjustments for size and spacing */}
+            <h3 className="form-title" style={{fontSize: '1.5rem', paddingTop: '1.5rem', paddingBottom: '0.5rem'}}>Social & Web Links</h3>
+            <div className="label-flex-container">
+              <label htmlFor="linkedinProfile">LinkedIn:</label>
+              <input type="url" id="linkedinProfile" name="linkedinProfile" value={profileData.linkedinProfile} onChange={handleChange} className="form-input"/>
+            </div>
+            <div className="label-flex-container">
+              <label htmlFor="instagramProfile">Instagram:</label>
+              <input type="url" id="instagramProfile" name="instagramProfile" value={profileData.instagramProfile} onChange={handleChange} className="form-input"/>
+            </div>
+            <div className="label-flex-container">
+              <label htmlFor="facebookProfile">Facebook:</label>
+              <input type="url" id="facebookProfile" name="facebookProfile" value={profileData.facebookProfile} onChange={handleChange} className="form-input"/>
+            </div>
+            <div className="label-flex-container">
+              <label htmlFor="youtubeProfile">YouTube:</label>
+              <input type="url" id="youtubeProfile" name="youtubeProfile" value={profileData.youtubeProfile} onChange={handleChange} className="form-input"/>
+            </div>
+            <div className="label-flex-container">
+              <label htmlFor="tiktokProfile">TikTok:</label>
+              <input type="url" id="tiktokProfile" name="tiktokProfile" value={profileData.tiktokProfile} onChange={handleChange} className="form-input"/>
+            </div>
+            <div className="label-flex-container">
+              <label htmlFor="twitterProfile">Twitter:</label>
+              <input type="url" id="twitterProfile" name="twitterProfile" value={profileData.twitterProfile} onChange={handleChange} className="form-input"/>
+            </div>
+            <div className="label-flex-container">
+              <label htmlFor="website">Website:</label>
+              <input type="url" id="website" name="website" value={profileData.website} onChange={handleChange} className="form-input"/>
+            </div>
 
-            <button type="submit" style={{ width: '100%', padding: '0.75rem 1.25rem', borderRadius: '0.5rem', backgroundColor: '#3e58da', color: 'white', fontWeight: 'bold', cursor: 'pointer', marginTop: '1rem' }}>
-              Update Profile
-            </button>
+            <div className="form-group" style={{marginTop: '2rem'}}> {/* Added form-group for consistent spacing */}
+              <button type="submit" className="form-button">
+                Update Profile
+              </button>
+            </div>
           </form>
         </div>
       </main>

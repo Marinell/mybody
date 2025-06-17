@@ -23,98 +23,106 @@ const ProfessionalDashboardPage = () => {
   useEffect(() => {
     if (!isAuthLoading) { // Only run when auth state is resolved
         if (!isLoggedIn() || !currentUser || currentUser.role !== 'PROFESSIONAL') {
-            logoutUser();
+            logoutUser(); // This will trigger redirect via AuthContext's ProtectedRoute logic or similar
             return;
         }
         setProfessionalName(currentUser.name || currentUser.email);
 
         const fetchDashboardData = async () => {
         try {
+            // Assuming apiClient is set up to handle authorization tokens
             const data = await apiClient('/professionals/me/dashboard', 'GET');
             setAppointmentDTOs(data || []);
         } catch (error) {
             setMessage(error.data?.message || error.message || 'Failed to fetch dashboard data.');
-            setAppointmentDTOs([]);
+            setAppointmentDTOs([]); // Ensure it's an array even on error
         }
         };
         fetchDashboardData();
     }
-  }, [currentUser, navigate, isLoggedIn, logoutUser, isAuthLoading]); // Added dependencies
+  }, [currentUser, navigate, isLoggedIn, logoutUser, isAuthLoading]);
 
-  // Simplified JSX, Tailwind classes omitted.
-  // Styles are inline for brevity, consider CSS modules or styled-components for larger app.
-  const sidebarStyle = { flexBasis: '320px', /* w-80 */ backgroundColor: 'white', padding: '1rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: '700px' };
-  const contentStyle = { flex: 1, maxWidth: '960px', padding: '0.5rem 1rem' };
-  const navItemStyle = { display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.5rem 0.75rem', borderRadius: '0.75rem', cursor: 'pointer', textDecoration: 'none', color: '#121317' };
-  const activeNavItemStyle = { ...navItemStyle, backgroundColor: '#f1f1f4' };
+  // Use a path map or similar for active link detection if more links are added
+  const currentPath = window.location.pathname;
 
-  if (isAuthLoading || (!currentUser && isLoggedIn())) { // Show loading if auth is loading or if logged in but currentUser is not yet set
-    return <div>Loading dashboard...</div>;
+  if (isAuthLoading || (!currentUser && isLoggedIn())) {
+    return <div className="form-subtext" style={{textAlign: 'center', paddingTop: '2rem'}}>Loading dashboard...</div>;
   }
 
   if (!currentUser || currentUser.role !== 'PROFESSIONAL') {
-    // This case should ideally be handled by the redirect in useEffect,
-    // but as a fallback or if navigation is slow:
-    return <div>Redirecting to login...</div>;
+    return <div className="form-subtext" style={{textAlign: 'center', paddingTop: '2rem'}}>Redirecting to login...</div>;
   }
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', fontFamily: 'Manrope, "Noto Sans", sans-serif', backgroundColor: 'white' }}>
-      <div style={sidebarStyle}>
+    <div className="dashboard-layout">
+      <aside className="dashboard-sidebar">
         <div>
-          <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem' }}>
-            <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: '50%', backgroundColor: '#e0e0e0' }}>{/* Avatar Placeholder */}</div>
+          <div className="dashboard-sidebar-header">
+            <div className="sidebar-avatar-placeholder">
+              {/* Can use initials or a generic icon */}
+              {professionalName.substring(0,1).toUpperCase()}
+            </div>
             <div>
-              <h1 style={{ color: '#121317', fontSize: '1rem', fontWeight: '500' }}>{professionalName}</h1>
-              <p style={{ color: '#686d82', fontSize: '0.875rem' }}>Professional</p>
+              <h1 className="sidebar-professional-name">{professionalName}</h1>
+              <p className="sidebar-professional-role">Professional</p>
             </div>
           </div>
-          <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            <Link to="/professional-dashboard" style={navItemStyle}><HomeIcon /> Home</Link>
-            <Link to="/appointment-requests" style={activeNavItemStyle}><TrayIcon /> Requests</Link> {/* Assuming this is active */}
-            {/* Placeholder Links for other dashboard sections */}
-            <Link to="/professional-profile" style={navItemStyle}><UsersIcon /> Profile</Link>
-            <button onClick={logoutUser} style={{ ...navItemStyle, textAlign: 'left', background: 'none', border: 'none', color: '#121317' }}>Logout</button>
+          <nav className="dashboard-nav">
+            <Link to="/professional-dashboard" className={`dashboard-nav-item ${currentPath === '/professional-dashboard' ? 'active' : ''}`}><HomeIcon /> Home</Link>
+            <Link to="/appointment-requests" className={`dashboard-nav-item ${currentPath === '/appointment-requests' ? 'active' : ''}`}><TrayIcon /> Requests</Link>
+            <Link to="/professional-profile" className={`dashboard-nav-item ${currentPath === '/professional-profile' ? 'active' : ''}`}><UsersIcon /> Profile</Link>
+            {/* Add more links here with appropriate icons and active class logic */}
           </nav>
         </div>
-      </div>
+        <nav className="dashboard-nav"> {/* Second nav for items at the bottom like logout */}
+             <button onClick={logoutUser} className="dashboard-nav-item dashboard-logout-button">Logout</button>
+        </nav>
+      </aside>
 
-      <div style={contentStyle}>
-        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem'}}>
+      <main className="dashboard-content">
+        <header className="dashboard-content-header">
             <div>
-                <p style={{color: '#121317', fontSize: '32px', fontWeight: 'bold'}}>Requests</p>
-                <p style={{color: '#686d82', fontSize: '14px'}}>Manage your appointment requests and consultations</p>
+                <h2 className="dashboard-title">Requests</h2>
+                <p className="dashboard-subtitle">Manage your appointment requests and consultations</p>
             </div>
-        </div>
-        <div style={{borderBottom: '1px solid #dddee4', paddingLeft: '1rem', display: 'flex', gap: '2rem'}}>
-            <Link to="/appointment-requests" style={{paddingTop: '1rem', paddingBottom: 'calc(0.875rem - 3px)', borderBottom: '3px solid #121317', color: '#121317', fontWeight: 'bold', fontSize: '14px', textDecoration: 'none'}}>Appointment Requests</Link>
-            <Link to="/consultations" style={{paddingTop: '1rem', paddingBottom: 'calc(0.875rem - 3px)', borderBottom: '3px solid transparent', color: '#686d82', fontWeight: 'bold', fontSize: '14px', textDecoration: 'none'}}>Consultations</Link>
-        </div>
+            {/* Potential actions like "New Request" button could go here */}
+        </header>
+        <nav className="dashboard-tabs">
+            {/* Assuming /appointment-requests is the default view for this page or a sub-route */}
+            <Link to="/appointment-requests" className="dashboard-tab-item active">Appointment Requests</Link>
+            <Link to="/consultations" className="dashboard-tab-item">Consultations</Link> {/* Example for another tab */}
+        </nav>
 
-        {message && <p style={{ color: 'red', textAlign: 'center', padding: '1rem' }}>{message}</p>}
+        {message && !message.includes("success") && <div className="error-message">{message}</div>}
+        {message && message.includes("success") && <div className="success-message">{message}</div>}
 
-        <div style={{ padding: '0.5rem 1rem' }}>
-          <h3 style={{ color: '#121317', fontSize: '1.125rem', fontWeight: 'bold', paddingTop: '1rem', paddingBottom: '0.5rem' }}>New Client Requests</h3>
-          {appointmentDTOs.length === 0 && !message && <p style={{ textAlign: 'center', color: '#686d82', padding: '1.25rem 0' }}>No new appointment requests at this time.</p>}
+
+        <div> {/* Content for the active tab */}
+          <h3 className="data-list-title">New Client Requests</h3>
+          {appointmentDTOs.length === 0 && !message.includes("Failed") && (
+            <p className="data-list-empty-message">No new appointment requests at this time.</p>
+          )}
           {appointmentDTOs.map(req => (
-            <div key={req.requestId /* Assuming unique ID */} style={{ display: 'flex', alignItems: 'center', gap: '1rem', backgroundColor: 'white', padding: '0.75rem', margin: '0.5rem 0', border: '1px solid #e2e8f0', borderRadius: '0.5rem', boxShadow: '0 1px 2px 0 rgba(0,0,0,0.05)' }}>
-              <div style={{ flexShrink: 0, width: '3rem', height: '3rem', borderRadius: '50%', backgroundColor: '#e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <ClientIcon />
+            <div key={req.requestId || req.id /* Use a unique ID from your DTO */} className="appointment-card">
+              <div className="appointment-client-icon-container">
+                <ClientIcon /> {/* Ensure SVG is styled to be visible */}
               </div>
-              <div style={{ flexGrow: 1 }}>
-                <p style={{ color: '#121317', fontWeight: '500' }}>{req.clientName || 'N/A'}</p>
-                <p style={{ color: '#686d82', fontSize: '0.875rem' }}>Wants: {req.serviceRequestCategory} - {req.serviceRequestDescription}</p>
-                <p style={{ color: '#686d82', fontSize: '0.75rem' }}>Requested: {new Date(req.createdAt).toLocaleString()}</p>
+              <div className="appointment-details">
+                <p className="appointment-client-name">{req.clientName || 'N/A'}</p>
+                <p className="appointment-service-info">
+                  Wants: {req.serviceRequestCategory || 'N/A'} - {req.serviceRequestDescription || 'No description provided.'}
+                </p>
+                <p className="appointment-timestamp">Requested: {new Date(req.createdAt).toLocaleString()}</p>
               </div>
-              <div style={{ flexShrink: 0, marginLeft: '1rem', textAlign: 'right' }}>
-                <p style={{ fontSize: '0.875rem', color: '#4a5568' }}><strong>Contact:</strong></p>
-                <p style={{ fontSize: '0.75rem', color: '#718096' }}>Email: {req.clientEmail || 'N/A'}</p>
-                <p style={{ fontSize: '0.75rem', color: '#718096' }}>Phone: {req.clientPhoneNumber || 'N/A'}</p>
+              <div className="appointment-contact-info">
+                <p className="appointment-contact-title">Contact:</p>
+                <p className="appointment-contact-detail">Email: {req.clientEmail || 'N/A'}</p>
+                <p className="appointment-contact-detail">Phone: {req.clientPhoneNumber || 'N/A'}</p>
               </div>
             </div>
           ))}
         </div>
-      </div>
+      </main>
     </div>
   );
 };

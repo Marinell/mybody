@@ -48,19 +48,21 @@ const LoginPage = () => {
   // Omitting complex Tailwind classes for now
   // Added basic styling similar to previous components
   return (
-    <div style={{ fontFamily: 'Manrope, "Noto Sans", sans-serif', backgroundColor: '#101323', color: 'white', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #21284a', padding: '0.75rem 2.5rem' }}>
-        <Link to="/" style={{textDecoration: 'none', color: 'white'}}><div style={{display: 'flex', alignItems: 'center', gap: '1rem'}}><h2>FitConnect</h2></div></Link>
+    // Body styles are applied globally, so this div might not need specific classes for font, bg, color, minHeight if they are inherited.
+    // However, explicit flex column might be needed if not default.
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <header className="app-header">
+        <Link to="/" className="app-header-title"><div><h2>FitConnect</h2></div></Link>
       </header>
-      <div style={{ display: 'flex', flex: 1, justifyContent: 'center', alignItems: 'center', padding: '1.25rem' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '512px', backgroundColor: '#181d35', padding: '2rem', borderRadius: '0.75rem' }}>
-          <h2 style={{ fontSize: '28px', fontWeight: 'bold', textAlign: 'center', paddingBottom: '0.75rem', paddingTop: '1.25rem' }}>
+      <div className="main-container">
+        <div className="content-container">
+          <h2 className="form-title">
             Login {userType && `- ${userType.charAt(0).toUpperCase() + userType.slice(1)}`}
           </h2>
-          {message && <div style={{ color: 'red', textAlign: 'center', padding: '0.5rem', marginBottom: '1rem' }}>{message}</div>}
+          {message && <div className="error-message">{message}</div>}
           <form onSubmit={handleLogin}>
-            <div style={{ marginBottom: '1rem' }}>
-              <label htmlFor="email" style={{ display: 'block', marginBottom: '0.5rem' }}>Email</label>
+            <div className="form-group">
+              <label htmlFor="email" className="form-label">Email</label>
               <input
                 type="email"
                 id="email"
@@ -68,11 +70,11 @@ const LoginPage = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                style={{ width: '100%', padding: '1rem', borderRadius: '0.75rem', backgroundColor: '#21284a', border: 'none', color: 'white' }}
+                className="form-input"
               />
             </div>
-            <div style={{ marginBottom: '1rem' }}>
-              <label htmlFor="password" style={{ display: 'block', marginBottom: '0.5rem' }}>Password</label>
+            <div className="form-group">
+              <label htmlFor="password" className="form-label">Password</label>
               <input
                 type="password"
                 id="password"
@@ -80,28 +82,28 @@ const LoginPage = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                style={{ width: '100%', padding: '1rem', borderRadius: '0.75rem', backgroundColor: '#21284a', border: 'none', color: 'white' }}
+                className="form-input"
               />
             </div>
-            <p style={{ color: '#8e99cc', fontSize: '0.875rem', padding: '0.25rem 0', textDecoration: 'underline', cursor: 'pointer', marginBottom: '1rem' }}>
+            <p className="form-text-link">
               <Link to="/forgot-password">Forgot password?</Link>
             </p>
-            <div style={{paddingTop: '0.5rem'}}>
+            <div style={{paddingTop: '0.5rem'}}> {/* This div might need a class if padding is recurrent */}
               <button
                 type="submit"
-                style={{ width: '100%', padding: '0.75rem 1.25rem', borderRadius: '9999px', backgroundColor: '#607afb', color: 'white', fontWeight: 'bold', cursor: 'pointer', border: 'none' }}
+                className="form-button"
               >
                 Log in
               </button>
             </div>
-            <p style={{ color: '#8e99cc', fontSize: '0.875rem', textAlign: 'center', padding: '1rem 0 0.25rem' }}>
+            <p className="form-subtext">
               Don't have an account?
               {userType === 'client'
-                ? <Link to="/signup-client" className="underline hover:text-white"> Sign up as Client</Link>
-                : <Link to="/signup-professional" className="underline hover:text-white"> Sign up as Professional</Link>}
+                ? <Link to="/signup-client"> Sign up as Client</Link> // global 'a' style applies
+                : <Link to="/signup-professional"> Sign up as Professional</Link>}
             </p>
-            <p style={{ color: '#8e99cc', fontSize: '0.875rem', textAlign: 'center', padding: '0.25rem 0' }}>
-              Or go back to <Link to="/" className="underline hover:text-white">User Type Selection</Link>.
+            <p className="form-subtext">
+              Or go back to <Link to="/">User Type Selection</Link>.
             </p>
           </form>
         </div>

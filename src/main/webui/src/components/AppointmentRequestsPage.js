@@ -58,65 +58,70 @@ const AppointmentRequestsPage = () => {
   };
 
   // Simplified JSX structure
-  const sidebarStyle = { flexBasis: '320px', backgroundColor: 'white', padding: '1rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: '700px' };
-  const contentStyle = { flex: 1, maxWidth: '960px', padding: '0.5rem 1rem' };
-  const navItemStyle = { display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.5rem 0.75rem', borderRadius: '0.75rem', cursor: 'pointer', textDecoration: 'none', color: '#121317' };
-  const activeNavItemStyle = { ...navItemStyle, backgroundColor: '#f1f1f4' };
-
+  const currentPath = window.location.pathname; // For active link styling
 
   if (!userInfo || userInfo.role !== 'PROFESSIONAL') {
-    return <div>Loading or redirecting...</div>;
+    return <div className="form-subtext" style={{textAlign: 'center', paddingTop: '2rem'}}>Loading or redirecting...</div>;
   }
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', fontFamily: 'Manrope, "Noto Sans", sans-serif', backgroundColor: 'white' }}>
-      <div style={sidebarStyle}>
+    <div className="dashboard-layout">
+      <aside className="dashboard-sidebar">
         <div>
-          <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem' }}>
-            <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: '50%', backgroundColor: '#e0e0e0' }}>{/* Avatar */}</div>
+          <div className="dashboard-sidebar-header">
+            <div className="sidebar-avatar-placeholder">{professionalName.substring(0,1).toUpperCase()}</div>
             <div>
-              <h1 style={{ color: '#121317', fontSize: '1rem', fontWeight: '500' }}>{professionalName}</h1>
-              <p style={{ color: '#656a86', fontSize: '0.875rem' }}>Professional</p>
+              <h1 className="sidebar-professional-name">{professionalName}</h1>
+              <p className="sidebar-professional-role">Professional</p>
             </div>
           </div>
-          <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            <Link to="/professional-dashboard" style={navItemStyle}><HomeIcon /> Home</Link>
-            <Link to="/appointment-requests" style={activeNavItemStyle}><TrayIcon /> Requests</Link>
-            <Link to="/consultations" style={navItemStyle}><CalendarIcon /> Consultations</Link>
-            <Link to="/clients" style={navItemStyle}><UsersIcon /> Clients</Link>
-            <Link to="/payments" style={navItemStyle}><PaymentsIcon /> Payments</Link>
-            <button onClick={logout} style={{ ...navItemStyle, textAlign: 'left', background: 'none', border: 'none' }}>Logout</button>
+          <nav className="dashboard-nav">
+            <Link to="/professional-dashboard" className={`dashboard-nav-item ${currentPath === '/professional-dashboard' ? 'active' : ''}`}><HomeIcon /> Home</Link>
+            <Link to="/appointment-requests" className={`dashboard-nav-item ${currentPath === '/appointment-requests' ? 'active' : ''}`}><TrayIcon /> Requests</Link>
+            <Link to="/consultations" className={`dashboard-nav-item ${currentPath === '/consultations' ? 'active' : ''}`}><CalendarIcon /> Consultations</Link>
+            {/* <Link to="/clients" className="dashboard-nav-item"><UsersIcon /> Clients</Link> Placeholder */}
+            {/* <Link to="/payments" className="dashboard-nav-item"><PaymentsIcon /> Payments</Link> Placeholder */}
+            <Link to="/professional-profile" className={`dashboard-nav-item ${currentPath === '/professional-profile' ? 'active' : ''}`}><UsersIcon /> Profile</Link>
           </nav>
         </div>
-      </div>
+        <nav className="dashboard-nav"> {/* Bottom part of sidebar */}
+             <button onClick={logout} className="dashboard-nav-item dashboard-logout-button">Logout</button>
+        </nav>
+      </aside>
 
-      <div style={contentStyle}>
-        <h2 style={{ fontSize: '32px', fontWeight: 'bold', padding: '1rem' }}>Appointment Requests</h2>
-        {message && <p style={{ color: message.includes('Failed') ? 'red' : 'green', textAlign: 'center', padding: '1rem' }}>{message}</p>}
+      <main className="dashboard-content">
+        <h2 className="dashboard-title">Appointment Requests</h2>
 
-        {requests.length === 0 && !message.includes('Failed') && <p style={{textAlign: 'center', padding: '1rem'}}>No appointment requests at this time.</p>}
+        {message && !message.toLowerCase().includes('success') && <div className="error-message">{message}</div>}
+        {message && message.toLowerCase().includes('success') && <div className="success-message">{message}</div>}
 
-        {requests.map(req => (
-          <div key={req.id} style={{ display: 'flex', alignItems: 'center', gap: '1rem', backgroundColor: 'white', padding: '0.75rem', margin: '0.5rem 0', border: '1px solid #e2e8f0', borderRadius: '0.5rem' }}>
-            <div style={{ flexShrink: 0, width: '3.5rem', height: '3.5rem', borderRadius: '50%', backgroundColor: '#e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        {requests.filter(req => req.status === 'PENDING').length === 0 && !message.toLowerCase().includes('failed') && (
+          <p className="data-list-empty-message">No new appointment requests at this time.</p>
+        )}
+
+        {requests.filter(req => req.status === 'PENDING').map(req => (
+          <div key={req.id} className="appointment-card">
+            <div className="appointment-client-icon-container">
               <ClientIcon />
             </div>
-            <div style={{ flexGrow: 1 }}>
-              <p style={{ color: '#121317', fontWeight: '500' }}>{req.clientName || `Client ID: ${req.clientId}`}</p>
-              <p style={{ color: '#656a86', fontSize: '0.875rem' }}>Service: {req.serviceType}</p>
-              <p style={{ color: '#656a86', fontSize: '0.875rem' }}>Preferred Date: {new Date(req.preferredDateTime).toLocaleString()}</p>
-              <p style={{ color: '#656a86', fontSize: '0.875rem', marginTop: '0.25rem' }}>Description: {req.description}</p>
-              <p style={{ color: '#656a86', fontSize: '0.875rem' }}>Status: {req.status}</p>
+            <div className="appointment-details">
+              <p className="appointment-client-name">{req.clientName || `Client ID: ${req.clientId}`}</p>
+              <p className="appointment-service-info">Service: {req.serviceType || 'Not specified'}</p>
+              <p className="appointment-service-info">Preferred Date: {new Date(req.preferredDateTime).toLocaleString()}</p>
+              <p className="appointment-service-info" style={{marginTop: '0.25rem'}}>Description: {req.description || 'N/A'}</p>
+              <p className="appointment-service-info">Status: <span style={{fontWeight: 'bold', color: req.status === 'PENDING' ? '#f59e0b' : (req.status === 'CONFIRMED' ? '#10B981' : '#EF4444')}}>{req.status}</span></p>
             </div>
             {req.status === 'PENDING' && (
-              <div style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                <button onClick={() => handleUpdateRequest(req.id, 'CONFIRMED')} style={{padding: '0.25rem 0.75rem', backgroundColor: 'green', color: 'white', border: 'none', borderRadius: '0.375rem', cursor: 'pointer'}}>Approve</button>
-                <button onClick={() => handleUpdateRequest(req.id, 'DECLINED')} style={{padding: '0.25rem 0.75rem', backgroundColor: 'red', color: 'white', border: 'none', borderRadius: '0.375rem', cursor: 'pointer'}}>Decline</button>
+              <div className="action-buttons-container">
+                <button onClick={() => handleUpdateRequest(req.id, 'CONFIRMED')} className="button-approve">Approve</button>
+                <button onClick={() => handleUpdateRequest(req.id, 'DECLINED')} className="button-decline">Decline</button>
               </div>
             )}
           </div>
         ))}
-      </div>
+
+        {/* Optionally, display confirmed/declined requests in separate lists or not at all */}
+      </main>
     </div>
   );
 };

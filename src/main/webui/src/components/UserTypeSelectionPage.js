@@ -13,50 +13,50 @@ const UserTypeSelectionPage = () => {
   // Replicating SVG directly in JSX can be verbose.
   // It's often better to save SVG as a .svg file and import it as a component or use an <img> tag.
   // For now, I'll omit the SVG for brevity in this step.
+  // Simplified FitConnectLogo, assuming app-header-title provides necessary styling
   const FitConnectLogo = () => (
-    <div className="flex items-center gap-4 text-white">
-      <div className="size-4">{/* SVG placeholder */}</div>
-      <h2 className="text-white text-lg font-bold leading-tight tracking-[-0.015em]">FitConnect</h2>
-    </div>
+    <Link to="/" className="app-header-title">
+      {/* SVG placeholder can be added here if needed */}
+      <h2>FitConnect</h2>
+    </Link>
   );
 
   return (
-    <div className="relative flex size-full min-h-screen flex-col bg-[#101323] text-white font-[Manrope]">
-      <div className="layout-container flex h-full grow flex-col">
-        <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#21284a] px-10 py-3">
-          <FitConnectLogo />
-        </header>
-        <div className="px-4 sm:px-10 md:px-40 flex flex-1 justify-center py-5">
-          <div className="layout-content-container flex flex-col w-full max-w-lg py-5 flex-1">
-            <h2 className="tracking-light text-[28px] font-bold leading-tight px-4 text-center pb-3 pt-5">Join FitConnect</h2>
-            <p className="text-base font-normal leading-normal pb-3 pt-1 px-4 text-center">
-              Connect with top-tier professionals in sports, fitness, and wellness to achieve your goals.
-            </p>
-            <div className="flex justify-center">
-              <div className="flex flex-1 gap-3 max-w-md flex-col items-stretch px-4 py-3">
-                {/* Using useNavigate for buttons that were not originally anchor tags */}
-                <button
-                  onClick={() => navigate('/login?userType=professional')}
-                  className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-5 bg-[#607afb] text-white text-base font-bold leading-normal tracking-[0.015em] w-full"
-                >
-                  <span className="truncate">I'm a Professional</span>
-                </button>
-                <button
-                  onClick={() => navigate('/login?userType=client')}
-                  className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-5 bg-[#21284a] text-white text-base font-bold leading-normal tracking-[0.015em] w-full"
-                >
-                  <span className="truncate">I'm a Client</span>
-                </button>
-              </div>
-            </div>
-            <p className="text-center mt-4">
-              Don't have an account?{' '}
-              <Link to="/signup-client" className="text-[#607afb] hover:underline">Sign Up as Client</Link> | {' '}
-              <Link to="/signup-professional" className="text-[#607afb] hover:underline">Sign Up as Professional</Link>
-            </p>
+    // Outermost div relies on global body styles for bg, font, text color.
+    // Flex column layout is managed by app-header and main-container.
+    <div style={{display: 'flex', flexDirection: 'column', minHeight: '100vh'}}>
+      <header className="app-header">
+        <FitConnectLogo />
+        {/* Navigation links can be added here if needed, or keep it minimal */}
+      </header>
+      <main className="main-container">
+        <div className="content-container">
+          <h2 className="form-title">Join FitConnect</h2>
+          <p className="form-subtext" style={{paddingBottom: '1.5rem', paddingTop: '0.5rem' }}> {/* Adjusted padding for this specific context */}
+            Connect with top-tier professionals in sports, fitness, and wellness to achieve your goals.
+          </p>
+          {/* Buttons container - can use form-group for consistent spacing if desired, or custom div */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%'}}>
+            <button
+              onClick={() => navigate('/login?userType=professional')}
+              className="form-button"
+            >
+              I'm a Professional
+            </button>
+            <button
+              onClick={() => navigate('/login?userType=client')}
+              className="form-button-secondary"
+            >
+              I'm a Client
+            </button>
           </div>
+          <p className="form-subtext" style={{marginTop: '1.5rem'}}> {/* Adjusted margin for this specific context */}
+            Don't have an account?{' '}
+            <Link to="/signup-client">Sign Up as Client</Link> | {' '}
+            <Link to="/signup-professional">Sign Up as Professional</Link>
+          </p>
         </div>
-      </div>
+      </main>
     </div>
   );
 };
