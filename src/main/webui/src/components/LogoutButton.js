@@ -2,10 +2,10 @@ import React from 'react';
 import { useAuth } from '../context/AuthContext'; // Adjust path if AuthContext is elsewhere
 
 const LogoutButton = ({ className }) => { // Added className prop
-  const { logoutUser, currentUser } = useAuth(); // logoutUser from AuthContext
+  const { logout, currentUser } = useAuth(); // logoutUser from AuthContext
 
   const handleLogout = () => {
-    logoutUser();
+    logout();
     // Navigation is handled by logoutUser in AuthContext
   };
 
