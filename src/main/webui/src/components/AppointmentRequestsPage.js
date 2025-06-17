@@ -40,7 +40,7 @@ const AppointmentRequestsPage = () => {
       }
     };
     fetchRequests();
-  }, [navigate, userInfo]);
+  }, []);
 
   const handleUpdateRequest = async (requestId, status) => {
     setMessage('');
