@@ -24,6 +24,7 @@ public class ProfessionalDocument extends PanacheEntityBase {
 
     private String fileName;
     private String fileType; // e.g., application/pdf, image/jpeg
+    private String storagePath;
 
     @JsonIgnore
     @Lob // For large binary data
@@ -72,5 +73,13 @@ public class ProfessionalDocument extends PanacheEntityBase {
 
     public void setFileContent(byte[] fileContent) {
         this.fileContent = fileContent;
+    }
+
+    public String getStoragePath() {
+        return storagePath;
+    }
+
+    public void setStoragePath(String storagePath) {
+        this.storagePath = storagePath;
     }
 }
