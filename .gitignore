@@ -44,3 +44,5 @@ nb-configuration.xml
 
 src/main/resources/application-local.properties
 
+src/main/webui/node_modules
+
