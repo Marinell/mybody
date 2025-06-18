@@ -144,8 +144,18 @@ const SignupProfessionalPage = () => {
       <main className="main-container">
         <div className="content-container"> {/* Max width is 512px by default from content-container */}
           <h2 className="form-title">Become a Pro</h2>
-          <div className="stepper-indicator">
-            Step {currentStep} of 3
+          <div className="stepper-container">
+            <div className="step">
+              <div className={`step-circle ${currentStep >= 1 ? 'completed-step' : ''} ${currentStep === 1 ? 'current-step' : ''}`}>1</div>
+              <div className={`step-line ${currentStep > 1 ? 'completed-line' : ''}`}></div>
+            </div>
+            <div className="step">
+              <div className={`step-circle ${currentStep >= 2 ? 'completed-step' : ''} ${currentStep === 2 ? 'current-step' : ''}`}>2</div>
+              <div className={`step-line ${currentStep > 2 ? 'completed-line' : ''}`}></div>
+            </div>
+            <div className="step">
+              <div className={`step-circle ${currentStep >= 3 ? 'completed-step' : ''} ${currentStep === 3 ? 'current-step' : ''}`}>3</div>
+            </div>
           </div>
           {message && (
             <div className={message.includes('successful') ? 'success-message' : 'error-message'}>

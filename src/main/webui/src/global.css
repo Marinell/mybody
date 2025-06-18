@@ -694,3 +694,63 @@ a:hover {
     /* width: 100%; /* This is already there, might need to be overridden by stepper-navigation logic */
     /* Ensure it has similar importance visually or adjust as needed */
 }
+
+/* Stepper Styles */
+.stepper-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Distribute space evenly */
+  width: 80%; /* Or a fixed width like 300px, adjust as needed */
+  margin: 20px auto; /* Center the stepper */
+  padding: 0;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  flex-grow: 1; /* Allow steps to grow and fill space */
+}
+
+.step:last-child {
+  flex-grow: 0; /* Last step should not have a line growing after it */
+}
+
+.step-circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #e0e0e0; /* Default (future step) color */
+  color: #757575; /* Default text color */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  border: 2px solid #e0e0e0; /* Default border */
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.step-line {
+  height: 2px;
+  background-color: #e0e0e0; /* Default line color */
+  flex-grow: 1; /* Line fills space between circles */
+  margin: 0 5px; /* Space around the line */
+  transition: background-color 0.3s ease;
+}
+
+/* Completed step styles */
+.step-circle.completed-step {
+  background-color: #a5d6a7; /* Light green for completed */
+  border-color: #a5d6a7;
+  color: #fff;
+}
+
+.step-line.completed-line {
+  background-color: #a5d6a7; /* Light green for line of completed step */
+}
+
+/* Current step styles */
+.step-circle.current-step {
+  background-color: #42a5f5; /* Blue for current */
+  border-color: #42a5f5;
+  color: #fff;
+}
