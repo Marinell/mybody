@@ -2,6 +2,7 @@ package com.fitconnect.service;
 
 import com.fitconnect.entity.Professional;
 import com.fitconnect.entity.ProfessionalDocument;
+import com.fitconnect.entity.ProfileStatus;
 import com.fitconnect.entity.Skill;
 import com.fitconnect.llm.ProfessionalProfileAnalyzer;
 
@@ -60,19 +61,19 @@ public class ProfessionalScreeningService {
         if (professional.documents != null) {
             for (ProfessionalDocument doc : professional.documents) {
                 try {
-                    Path docPath = Paths.get(doc.storagePath);
+                    Path docPath = Paths.get(doc.getStoragePath());
                     if (Files.exists(docPath)) {
                         try (InputStream stream = Files.newInputStream(docPath)) {
                             String text = tika.parseToString(stream);
                             documentTexts.append(text).append(" --- ");
-                            LOG.infof("Successfully extracted text from document: %s", doc.fileName);
+                            LOG.infof("Successfully extracted text from document: %s", doc.getFileName());
                         }
                     } else {
-                        LOG.warnf("Document not found at path: %s for professional ID: %d", doc.storagePath, professionalId);
+                        LOG.warnf("Document not found at path: %s for professional ID: %d", doc.getStoragePath(), professionalId);
                     }
                 } catch (Exception e) {
-                    LOG.errorf(e, "Failed to read or parse document %s for professional ID: %d", doc.fileName, professionalId);
-                    documentTexts.append("Error extracting text from document: ").append(doc.fileName).append(" --- ");
+                    LOG.errorf(e, "Failed to read or parse document %s for professional ID: %d", doc.getFileName(), professionalId);
+                    documentTexts.append("Error extracting text from document: ").append(doc.getFileName()).append(" --- ");
                 }
             }
         }
@@ -117,6 +118,8 @@ public class ProfessionalScreeningService {
         } else {
             professional.skills = new ArrayList<>();
         }
+
+        professional.setProfileStatus(ProfileStatus.VERIFIED);
 
         professional.persist();
         LOG.infof("Successfully screened and updated profile for professional ID: %d", professionalId);

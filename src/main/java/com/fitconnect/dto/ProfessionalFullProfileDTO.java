@@ -39,9 +39,9 @@ public class ProfessionalFullProfileDTO {
         // Not exposing storagePath to the professional directly unless needed
 
         public DocumentInfoDTO(ProfessionalDocument doc) {
-            this.id = doc.id;
-            this.fileName = doc.fileName;
-            this.fileType = doc.fileType;
+            this.id = doc.getId();
+            this.fileName = doc.getFileName();
+            this.fileType = doc.getFileType();
         }
     }
 

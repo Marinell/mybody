@@ -57,8 +57,11 @@ public class ProfessionalResource {
             return Response.status(Response.Status.BAD_REQUEST).entity("Request body is missing.").build();
         }
         try {
-            professionalService.registerProfessional(request);
-            return Response.status(Response.Status.CREATED).build();
+            Professional professional = professionalService.registerProfessional(request);
+            ProfessionalFullProfileDTO dto = new ProfessionalFullProfileDTO();
+            dto.setName(professional.getName());
+            dto.setEmail(professional.getEmail());
+            return Response.status(Response.Status.CREATED).entity(dto).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         } catch (RuntimeException e) {

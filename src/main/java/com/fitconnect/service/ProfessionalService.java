@@ -15,7 +15,6 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 // import jakarta.ws.rs.ForbiddenException; // Not used in this service directly
 import jakarta.ws.rs.NotFoundException; // Added
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
 import org.wildfly.security.password.Password;
@@ -132,6 +131,7 @@ public class ProfessionalService {
         pro.documents = profDocs;
 
         LOG.infof("Professional registered successfully: %s", pro.email);
+
         return pro;
     }
 
