@@ -38,18 +38,28 @@ export const AuthProvider = ({ children }) => {
             const data = await apiClient(endpoint, 'POST', { email, password });
             if (data.token) { // Ensure token
                 storeAuthToken(data.token);
-                var user = {"email": data.email, "role": data.role, "userId": data.userId};
-                storeUserInfo(user); // user should be { id, email, role, name (optional) }
+                // Add profileStatus to the user object
+                var user = {"email": data.email, "role": data.role, "userId": data.userId, "profileStatus": data.profileStatus};
+                storeUserInfo(user);
                 setToken(data.token);
-                setCurrentUser(user);
+                setCurrentUser(user); // This will now include profileStatus
 
-                // Navigate based on role
+                // Navigate based on role and profileStatus
                 if (user.role === 'PROFESSIONAL') {
-                    navigate('/professional-dashboard');
+                    if (user.profileStatus === 'PENDING_VERIFICATION') {
+                        navigate('/professional-profile-verification');
+                    } else if (user.profileStatus === 'VERIFIED') {
+                        navigate('/professional-dashboard');
+                    } else {
+                        // Fallback for PROFESSIONAL if status is unexpected (e.g., REJECTED or null/undefined)
+                        // Redirect to login or a generic error page, or verification page as a safe default
+                        navigate('/professional-profile-verification');
+                        // Or consider navigate('/login'); if REJECTED means they shouldn't access anything
+                    }
                 } else if (user.role === 'CLIENT') {
                     navigate('/customer-request');
                 } else {
-                    navigate('/'); // Fallback navigation
+                    navigate('/'); // Fallback navigation for other roles or if role is undefined
                 }
                 return user;
             } else {

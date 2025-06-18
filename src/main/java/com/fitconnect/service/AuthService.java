@@ -170,7 +170,25 @@ public class AuthService {
                                   .groups(roles) // User roles/groups
                                   .expiresIn(Duration.ofHours(1))
                                   .sign(); // Sign with the private key configured
-                return Optional.of(new LoginResponse(token, user.getId(), user.getEmail(), user.getRole().name()));
+
+                String profileStatus = null;
+                if (user.getRole() == UserRole.PROFESSIONAL) {
+                    // It's generally safer to fetch the Professional entity fresh to ensure all fields are loaded
+                    Professional professional = Professional.findById(user.getId());
+                    if (professional != null && professional.getProfileStatus() != null) {
+                        profileStatus = professional.getProfileStatus().name();
+                    } else if (professional != null) {
+                        // If professional exists but status is null, perhaps default or log
+                        profileStatus = ProfileStatus.PENDING_VERIFICATION.name(); // Default if status is unexpectedly null
+                    } else {
+                        // Log if professional record not found for a user with PROFESSIONAL role
+                        LOG.warnf("Professional record not found for user ID: %d, who has PROFESSIONAL role.", user.getId());
+                        profileStatus = ProfileStatus.PENDING_VERIFICATION.name(); // Or some other default/error status
+                    }
+                } else {
+                    profileStatus = "N/A"; // Or null, depending on how frontend handles it
+                }
+                return Optional.of(new LoginResponse(token, user.getId(), user.getEmail(), user.getRole().name(), profileStatus));
             }
         }
         LOG.infof("user NOT found");
