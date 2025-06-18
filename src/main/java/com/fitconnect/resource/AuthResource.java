@@ -58,9 +58,8 @@ public class AuthResource {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response registerProfessional(@BeanParam ProfessionalRegisterRequest request) {
         try {
-            // Assuming authService.registerProfessional(request) returns the registered professional entity
-            Object professional = authService.registerProfessional(request);
-            return Response.status(Response.Status.CREATED).entity(professional).build();
+            authService.registerProfessional(request);
+            return Response.status(Response.Status.CREATED).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         } catch (Exception e) {

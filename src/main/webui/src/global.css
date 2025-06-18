@@ -610,3 +610,87 @@ a:hover {
   cursor: not-allowed;
   opacity: 0.7;
 }
+
+/* Stepper Styles */
+.stepper-indicator {
+  text-align: center;
+  margin: 10px 0 20px 0;
+  color: #8e99cc; /* Using existing subtext color */
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.stepper-navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  gap: 1rem; /* Add gap between buttons if both are visible */
+}
+
+/* Ensure buttons in stepper navigation take available width if only one is present */
+.stepper-navigation > button {
+  flex-grow: 1; /* Allow buttons to grow */
+}
+
+/* If there are two buttons, they should share space */
+.stepper-navigation > button:not(:only-child) {
+    width: calc(50% - 0.5rem); /* Adjust width considering the gap */
+}
+
+
+.selected-files-list {
+  margin-top: 15px;
+  padding: 10px;
+  background-color: #21284a; /* Consistent with form input background */
+  border-radius: 0.5rem;
+}
+
+.selected-files-list h4 {
+  color: white;
+  font-size: 1rem;
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.selected-files-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.selected-files-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #101323; /* Darker border for separation */
+  color: #d1d5db; /* Slightly brighter text for file names */
+}
+
+.selected-files-list li:last-child {
+  border-bottom: none;
+}
+
+.delete-file-button {
+  background: transparent;
+  border: 1px solid #EF4444; /* Using a red color, similar to .button-decline */
+  color: #EF4444;
+  padding: 4px 10px;
+  border-radius: 0.375rem; /* Consistent with .button-decline */
+  cursor: pointer;
+  font-size: 0.75rem; /* Smaller font */
+  font-weight: 500;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.delete-file-button:hover {
+  background-color: #EF4444;
+  color: white;
+}
+
+/* Adjustments for form-button-secondary if used in stepper */
+/* This class already exists, but we ensure it fits well in the stepper context */
+.form-button-secondary {
+    /* width: 100%; /* This is already there, might need to be overridden by stepper-navigation logic */
+    /* Ensure it has similar importance visually or adjust as needed */
+}
