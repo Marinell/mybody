@@ -1,7 +1,5 @@
 package com.fitconnect.resource;
 
-package com.fitconnect.resource;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fitconnect.dto.LoginRequest;
 import com.fitconnect.dto.RegisterRequest;
