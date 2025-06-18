@@ -754,3 +754,138 @@ a:hover {
   border-color: #42a5f5;
   color: #fff;
 }
+
+/* Utility classes identified from ProfessionalProfileVerificationPage.js */
+.text-center {
+  text-align: center;
+}
+
+.pb-3 {
+  padding-bottom: 0.75rem;
+}
+
+.py-4 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+.progress-bar-background {
+  background-color: #2f396a;
+  border-radius: 0.375rem; /* Adjusted for new height */
+  overflow: hidden;
+  /* margin: 0.5rem 0; */ /* Removed margin */
+}
+
+.progress-bar-indicator {
+  height: 0.75rem; /* Increased height */
+  border-radius: 0.375rem; /* Pill shape, half of height */
+  transition: width 0.3s ease-in-out; /* Added transition */
+}
+
+.py-3 {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+.mt-custom-2rem {
+  margin-top: 2rem;
+}
+
+.pt-custom-1_5rem {
+  padding-top: 1.5rem;
+}
+
+.border-t-custom {
+  border-top: 1px solid #21284a;
+}
+
+.text-xl {
+  font-size: 1.25rem;
+}
+
+.font-bold {
+  font-weight: bold;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.d-block {
+  display: block;
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.fs-small {
+  font-size: 0.875rem;
+}
+
+.mt-4 {
+  margin-top: 1rem;
+}
+
+/* Styles for Status Icons */
+.status-icon-wrapper { /* New wrapper class for positioning */
+  display: inline-block; /* Allows it to sit nicely with text */
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+.status-icon-wrapper svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.pending-icon {
+  fill: orange;
+}
+
+.verified-icon {
+  fill: #607afb;
+}
+
+.rejected-icon {
+  fill: red;
+}
+
+.default-icon {
+    fill: gray;
+}
+
+/* Visually Hidden Utility */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+/* Text Color Utilities for Upload Messages */
+.error-message-text {
+  color: red;
+}
+
+.success-message-text {
+  color: #10B981;
+}
+
+.selected-file-text {
+  color: #8e99cc;
+  margin-top: 0.25rem;
+  display: block;
+  text-align: center; /* Changed from left to center */
+  margin-bottom: 0.5rem;
+}
