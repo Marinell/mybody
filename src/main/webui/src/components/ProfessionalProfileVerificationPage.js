@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext'; // Add this
 
 const ProfessionalProfileVerificationPage = () => {
   const [verificationStatus, setVerificationStatus] = useState('');
+  const [intervalId, setIntervalId] = useState(null);
   const [statusMessage, setStatusMessage] = useState('Loading verification status...');
   const [progressPercent, setProgressPercent] = useState(0);
   const [progressColor, setProgressColor] = useState('#607afb'); // Default blue
@@ -34,12 +35,55 @@ const DEFAULT_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24
 
     const fetchStatus = async () => {
       try {
-        const data = await apiClient('/professionals/me/status');
-        setVerificationStatus(data.status); // Local state update
-        if (updateUserProfileStatus) { // Ensure the function is available
-            updateUserProfileStatus(data.status); // Global auth context update
+        if (!userInfo || !userInfo.userId) {
+            console.error('User ID not found, cannot fetch initial status.');
+            setStatusMessage('User information is missing. Cannot retrieve verification status.');
+            setProgressPercent(0);
+            setProgressColor('red');
+            return;
         }
-        updateUIBasedOnStatus(data.status);
+        const initialData = await apiClient(`/professionals/${userInfo.userId}/screen`, 'POST');
+        setVerificationStatus(initialData.status); // Local state update
+        if (updateUserProfileStatus) { // Ensure the function is available
+            updateUserProfileStatus(initialData.status); // Global auth context update
+        }
+        updateUIBasedOnStatus(initialData.status);
+
+        if (initialData.status === 'PENDING_VERIFICATION') {
+          const newIntervalId = setInterval(async () => {
+            try {
+              if (!userInfo || !userInfo.userId) {
+                console.error('User ID not found, stopping polling.');
+                clearInterval(newIntervalId);
+                setIntervalId(null);
+                return;
+              }
+              console.log('Polling for verification status...');
+              const pollData = await apiClient(`/professionals/me/status`);
+              const newStatus = pollData.status;
+
+              setVerificationStatus(newStatus);
+              if (updateUserProfileStatus) {
+                updateUserProfileStatus(newStatus);
+              }
+              updateUIBasedOnStatus(newStatus);
+
+              if (newStatus === 'VERIFIED') {
+                clearInterval(newIntervalId);
+                setIntervalId(null);
+                navigate('/professional-dashboard');
+              } else if (newStatus === 'REJECTED') {
+                clearInterval(newIntervalId);
+                setIntervalId(null);
+              }
+            } catch (error) {
+              console.error('Error polling status:', error);
+              clearInterval(newIntervalId);
+              setIntervalId(null);
+            }
+          }, 5000);
+          setIntervalId(newIntervalId);
+        }
       } catch (error) {
         setStatusMessage(error.data?.message || error.message || 'Could not retrieve profile status.');
         setProgressPercent(0);
@@ -49,7 +93,14 @@ const DEFAULT_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24
       }
     };
     fetchStatus();
-  }, [navigate, userInfo?.role]); // userInfo added as dependency
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+        console.log('Polling interval cleared on unmount or dependency change.');
+      }
+    };
+  }, [navigate, userInfo?.role, userInfo?.userId, intervalId, updateUserProfileStatus]);
 
   const updateUIBasedOnStatus = (status) => {
     switch (status) {
@@ -162,7 +213,7 @@ const DEFAULT_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24
             </div>
           )}
 
-          { (verificationStatus === 'REJECTED' || verificationStatus === '' || verificationStatus === 'NEEDS_RESUBMISSION') && (
+          { (verificationStatus === 'REJECTED' || verificationStatus === 'NEEDS_RESUBMISSION') && (
             // Replaced custom margin/padding classes with standardized ones (mt-8, pt-6). border-t-custom remains.
             <form onSubmit={handleDocumentSubmit} className="mt-8 pt-6 border-t-custom">
                 {/* Added utility classes for font size, weight, and margin. These may need to be created in global.css */}
