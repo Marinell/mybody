@@ -59,6 +59,7 @@ public class ProfessionalResource {
         try {
             Professional professional = professionalService.registerProfessional(request);
             ProfessionalFullProfileDTO dto = new ProfessionalFullProfileDTO();
+            dto.setId(professional.getId());
             dto.setName(professional.getName());
             dto.setEmail(professional.getEmail());
             return Response.status(Response.Status.CREATED).entity(dto).build();
