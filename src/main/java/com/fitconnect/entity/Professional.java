@@ -1,15 +1,14 @@
 package com.fitconnect.entity;
 
-import jakarta.persistence.*;
 import java.util.List;
 import java.util.Map;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
-@Table(name = "professionals")
 @Getter
 @Setter
+@NoArgsConstructor
 public class Professional extends User {
 
     public String profession;
@@ -17,37 +16,21 @@ public class Professional extends User {
     public String postalCode;
     public Integer yearsOfExperience;
 
-    @Column(columnDefinition = "TEXT")
     public String qualifications; // As per HTML, this is a textarea
 
-    @Column(columnDefinition = "TEXT")
     public String aboutYou; // As per HTML, this is a textarea
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "professional_links", joinColumns = @JoinColumn(name = "professional_id"))
-    @MapKeyColumn(name = "link_type") // e.g., "LINKEDIN", "WEBSITE"
-    @Column(name = "url")
     public Map<String, String> socialMediaLinks; // Store links like LinkedIn, Website, etc.
 
-    @Enumerated(EnumType.STRING)
     public ProfileStatus profileStatus;
 
-    @Column(columnDefinition = "TEXT")
     public String summarizedSkills; // To be populated by LLM
 
-    @OneToMany(mappedBy = "professional", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    public List<ProfessionalDocument> documents;
+    public List<String> professionalDocumentReferences; // Changed from List<ProfessionalDocument>
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "professional_skills",
-        joinColumns = @JoinColumn(name = "professional_id"),
-        inverseJoinColumns = @JoinColumn(name = "skill_id")
-    )
-    public List<Skill> skills;
+    public List<String> skillNames; // Changed from List<Skill>
 
-    @OneToMany(mappedBy = "professional")
-    public List<Appointment> appointments;
+    // appointments list removed, will be queried
 
     public Professional() {
         this.role = UserRole.PROFESSIONAL;
@@ -55,5 +38,5 @@ public class Professional extends User {
     }
 
     // Getters and setters for new fields
-    // ... (Consider adding if direct field access is not preferred, Panache usually allows direct access)
+    // ... (Lombok handles this)
 }

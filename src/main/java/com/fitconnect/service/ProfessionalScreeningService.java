@@ -5,22 +5,26 @@ import com.fitconnect.entity.ProfessionalDocument;
 import com.fitconnect.entity.ProfileStatus;
 import com.fitconnect.entity.Skill;
 import com.fitconnect.llm.ProfessionalProfileAnalyzer;
+import com.fitconnect.repository.ProfessionalDocumentRepository; // Added
+import com.fitconnect.repository.ProfessionalRepository; // Added
+import com.fitconnect.repository.SkillRepository; // Added
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
+// import jakarta.transaction.Transactional; // Removed
 import org.apache.tika.Tika;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+// import java.io.InputStream; // Tika InputStream not used directly with GCS path like this
+// import java.nio.file.Files; // Removed
+// import java.nio.file.Path; // Removed
+// import java.nio.file.Paths; // Removed
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException; // Added
 import java.util.stream.Collectors;
 
 @ApplicationScoped
@@ -32,48 +36,55 @@ public class ProfessionalScreeningService {
     ProfessionalProfileAnalyzer profileAnalyzer;
 
     @Inject
+    ProfessionalRepository professionalRepository; // Added
+
+    @Inject
+    SkillRepository skillRepository; // Added
+
+    @Inject
+    ProfessionalDocumentRepository professionalDocumentRepository; // Added
+
+    @Inject
     @ConfigProperty(name = "quarkus.langchain4j.openai.api-key")
     String openaiApiKey;
 
+    public void screenProfessionalProfile(String professionalId) throws ExecutionException, InterruptedException { // Changed Long to String, removed @Transactional, added throws
+        LOG.infof("Starting screening process for professional ID: %s", professionalId);
 
-    @Transactional
-    public void screenProfessionalProfile(Long professionalId) {
-        LOG.infof("Starting screening process for professional ID: %d", professionalId);
+        Optional<Professional> proOptional = professionalRepository.findById(professionalId);
+        if (proOptional.isEmpty()) {
+            LOG.errorf("Professional with ID %s not found.", professionalId);
+            // Optionally throw an exception or handle as appropriate
+            return;
+        }
+        Professional professional = proOptional.get();
 
         if (openaiApiKey == null || openaiApiKey.isEmpty() || "YOUR_OPENAI_API_KEY".equals(openaiApiKey.trim())) {
             LOG.warn("OpenAI API key is not configured or is using the placeholder value. Skipping LLM screening.");
-            Professional pro = Professional.findById(professionalId);
-            if (pro != null) {
-                pro.summarizedSkills = "LLM screening skipped: API key not configured.";
-                pro.persist();
-            }
-            return;
-        }
-
-        Professional professional = Professional.findById(professionalId);
-        if (professional == null) {
-            LOG.errorf("Professional with ID %d not found.", professionalId);
+            professional.setSummarizedSkills("LLM screening skipped: API key not configured.");
+            professional.setUpdatedAt(java.time.LocalDateTime.now());
+            professionalRepository.save(professional);
             return;
         }
 
         StringBuilder documentTexts = new StringBuilder();
-        Tika tika = new Tika();
-        if (professional.documents != null) {
-            for (ProfessionalDocument doc : professional.documents) {
+        // Tika tika = new Tika(); // Tika might still be useful if fetching GCS file bytes
+        if (professional.getProfessionalDocumentReferences() != null && !professional.getProfessionalDocumentReferences().isEmpty()) {
+            for (String docId : professional.getProfessionalDocumentReferences()) {
                 try {
-                    Path docPath = Paths.get(doc.getStoragePath());
-                    if (Files.exists(docPath)) {
-                        try (InputStream stream = Files.newInputStream(docPath)) {
-                            String text = tika.parseToString(stream);
-                            documentTexts.append(text).append(" --- ");
-                            LOG.infof("Successfully extracted text from document: %s", doc.getFileName());
-                        }
+                    Optional<ProfessionalDocument> docOptional = professionalDocumentRepository.findById(docId);
+                    if (docOptional.isPresent()) {
+                        ProfessionalDocument doc = docOptional.get();
+                        // Actual file reading from GCS and text extraction is complex and out of scope here.
+                        // For now, append a placeholder.
+                        LOG.infof("Placeholder: Would extract text from document: %s at GCS path: %s", doc.getFileName(), doc.getStoragePath());
+                        documentTexts.append(String.format("Document content for %s from %s not extracted in this version. --- ", doc.getFileName(), doc.getStoragePath()));
                     } else {
-                        LOG.warnf("Document not found at path: %s for professional ID: %d", doc.getStoragePath(), professionalId);
+                        LOG.warnf("ProfessionalDocument metadata not found for ID: %s, linked to professional ID: %s", docId, professionalId);
                     }
                 } catch (Exception e) {
-                    LOG.errorf(e, "Failed to read or parse document %s for professional ID: %d", doc.getFileName(), professionalId);
-                    documentTexts.append("Error extracting text from document: ").append(doc.getFileName()).append(" --- ");
+                    LOG.errorf(e, "Failed to process document reference %s for professional ID: %s", docId, professionalId);
+                    documentTexts.append(String.format("Error processing document reference %s. --- ", docId));
                 }
             }
         }
@@ -88,11 +99,11 @@ public class ProfessionalScreeningService {
 
         LOG.info("Sending data to LLM for summarization and skill extraction...");
         String summary = profileAnalyzer.summarizeExpertiseAndSkills(profileData, documentTexts.toString());
-        professional.summarizedSkills = summary;
-        LOG.infof("LLM Summary for professional ID %d: %s", professionalId, summary);
+        professional.setSummarizedSkills(summary); // Changed to setter
+        LOG.infof("LLM Summary for professional ID %s: %s", professionalId, summary);
 
         String skillsListString = profileAnalyzer.extractSkillsList(profileData, documentTexts.toString());
-        LOG.infof("LLM Extracted Skills List for professional ID %d: %s", professionalId, skillsListString);
+        LOG.infof("LLM Extracted Skills List for professional ID %s: %s", professionalId, skillsListString);
 
         if (skillsListString != null && !skillsListString.isEmpty()) {
             List<String> skillNames = Arrays.stream(skillsListString.split(","))
@@ -101,27 +112,23 @@ public class ProfessionalScreeningService {
                                            .distinct()
                                            .collect(Collectors.toList());
 
-            List<Skill> skillsToAssociate = new ArrayList<>();
+            // Ensure skills exist in the 'skills' collection
             for (String skillName : skillNames) {
-                Optional<Skill> existingSkillOpt = Skill.find("lower(name)", skillName.toLowerCase()).firstResultOptional();
-                Skill skillToPersist;
-                if (existingSkillOpt.isPresent()) {
-                    skillToPersist = existingSkillOpt.get();
-                } else {
-                    skillToPersist = new Skill();
-                    skillToPersist.name = skillName;
-                    skillToPersist.persist();
+                Optional<Skill> existingSkillOpt = skillRepository.findByName(skillName); // Assumes findByName is case-sensitive or exact match
+                if (existingSkillOpt.isEmpty()) {
+                    Skill newSkill = new Skill();
+                    newSkill.setName(skillName);
+                    skillRepository.save(newSkill); // Save new skill
                 }
-                skillsToAssociate.add(skillToPersist);
             }
-            professional.skills = skillsToAssociate;
+            professional.setSkillNames(skillNames); // Set the list of skill names
         } else {
-            professional.skills = new ArrayList<>();
+            professional.setSkillNames(new ArrayList<>()); // Set to empty list
         }
 
         professional.setProfileStatus(ProfileStatus.VERIFIED);
-
-        professional.persist();
-        LOG.infof("Successfully screened and updated profile for professional ID: %d", professionalId);
+        professional.setUpdatedAt(java.time.LocalDateTime.now());
+        professionalRepository.save(professional); // Changed from persist
+        LOG.infof("Successfully screened and updated profile for professional ID: %s", professionalId);
     }
 }

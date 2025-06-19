@@ -8,74 +8,73 @@ import com.fitconnect.entity.ProfessionalDocument;
 import com.fitconnect.entity.User;
 import com.fitconnect.entity.ProfileStatus;
 import com.fitconnect.entity.UserRole;
-import com.fitconnect.dto.ProfessionalProfileUpdateDTO; // Added
+import com.fitconnect.dto.ProfessionalProfileUpdateDTO;
+import com.fitconnect.repository.ProfessionalDocumentRepository; // Added
+import com.fitconnect.repository.ProfessionalRepository; // Added
+import com.fitconnect.repository.SkillRepository; // Added
+import com.fitconnect.repository.UserRepository; // Added
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
-// import jakarta.ws.rs.ForbiddenException; // Not used in this service directly
-import jakarta.ws.rs.NotFoundException; // Added
+// import jakarta.transaction.Transactional; // Removed
+import jakarta.ws.rs.NotFoundException;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
-import org.wildfly.security.password.Password;
-import org.wildfly.security.password.PasswordFactory;
-import org.wildfly.security.password.spec.ClearPasswordSpec;
-import org.wildfly.security.password.util.ModularCrypt;
+// Wildfly security imports removed
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.security.spec.InvalidKeySpecException;
+// import java.nio.file.Files; // Removed
+// import java.nio.file.Path; // Removed
+// import java.nio.file.Paths; // Removed
+// import java.nio.file.StandardCopyOption; // Removed
+// import java.security.spec.InvalidKeySpecException; // Removed
 import java.util.*;
+import java.util.concurrent.ExecutionException; // Added
 
 @ApplicationScoped
 public class ProfessionalService {
 
     private static final Logger LOG = Logger.getLogger(ProfessionalService.class);
-    private final Path UPLOAD_DIR = Paths.get("file-uploads", "professional-documents");
+    // private final Path UPLOAD_DIR = Paths.get("file-uploads", "professional-documents"); // Removed
 
     @Inject
     ObjectMapper objectMapper;
 
-    private PasswordFactory passwordFactory;
+    @Inject
+    UserRepository userRepository; // Added
 
+    @Inject
+    ProfessionalRepository professionalRepository; // Added
+
+    @Inject
+    SkillRepository skillRepository; // Added
+
+    ProfessionalDocumentRepository professionalDocumentRepository;
+
+    @Inject
+    FirebaseStorageService storageService; // Added
+
+    // PasswordFactory and constructor related to it removed
     public ProfessionalService() {
-        try {
-            passwordFactory = PasswordFactory.getInstance(org.wildfly.security.password.interfaces.BCryptPassword.ALGORITHM_BCRYPT);
-            Files.createDirectories(UPLOAD_DIR);
-        } catch (Exception e) {
-            LOG.error("Failed to initialize PasswordFactory or create upload directory", e);
-            throw new RuntimeException("Service initialization failed", e);
-        }
+        // try {
+            // Files.createDirectories(UPLOAD_DIR); // Removed
+        // } catch (Exception e) {
+            // LOG.error("Failed to create upload directory", e);
+            // throw new RuntimeException("Service initialization failed", e);
+        // }
     }
 
-    private String hashPassword(String password) {
-        ClearPasswordSpec clearSpec = new ClearPasswordSpec(password.toCharArray());
-        Password newPassword = null;
-        try {
-            newPassword = passwordFactory.generatePassword(clearSpec);
-        } catch (InvalidKeySpecException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            return Arrays.toString(ModularCrypt.encode(newPassword));
-        } catch (InvalidKeySpecException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    // hashPassword method removed
 
-    @Transactional
-    public Professional registerProfessional(ProfessionalRegisterRequest request) {
-        if (User.find("email", request.email).firstResultOptional().isPresent()) {
+    public Professional registerProfessional(ProfessionalRegisterRequest request) throws ExecutionException, InterruptedException { // Removed @Transactional, added throws
+        if (userRepository.findByEmail(request.email).isPresent()) { // Changed to userRepository
             throw new IllegalArgumentException("Email already exists: " + request.email);
         }
 
         Professional pro = new Professional();
         pro.setName(request.name);
         pro.setEmail(request.email);
-        pro.setPassword(hashPassword(request.password));
+        // pro.setPassword(hashPassword(request.password)); // Password hashing removed
         pro.setPhoneNumber(request.phoneNumber);
         pro.setRole(UserRole.PROFESSIONAL);
 
@@ -96,65 +95,87 @@ public class ProfessionalService {
             }
         }
 
-        pro.persist();
+        User savedUserPart = userRepository.save(pro); // Save User part first
+        pro.setId(savedUserPart.getId()); // Set ID for professional part
 
-        List<ProfessionalDocument> profDocs = new ArrayList<>();
+        professionalRepository.save(pro); // Save Professional specific data
+
         if (request.documents != null && !request.documents.isEmpty()) {
+            if (pro.getProfessionalDocumentReferences() == null) {
+                pro.setProfessionalDocumentReferences(new ArrayList<>());
+            }
             for (FileUpload uploadedFile : request.documents) {
                 try {
                     String originalFileName = uploadedFile.fileName();
-                    String extension = "";
-                    int i = originalFileName.lastIndexOf('.');
-                    if (i > 0) {
-                        extension = originalFileName.substring(i);
+                    String storagePath;
+                    try {
+                        storagePath = storageService.uploadFile(uploadedFile, "professional-documents");
+                    } catch (IOException e) {
+                        LOG.errorf(e, "Failed to upload document %s to Firebase Storage.", originalFileName);
+                        // Depending on policy, might continue without this doc, or rethrow to fail registration
+                        // For now, log and skip this document
+                        continue;
                     }
-                    String newFileName = UUID.randomUUID().toString() + extension;
-                    Path filePath = UPLOAD_DIR.resolve(newFileName);
-
-                    Files.copy(uploadedFile.uploadedFile(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
                     ProfessionalDocument doc = new ProfessionalDocument();
-                    doc.setProfessional(pro);
+                    doc.setProfessionalId(pro.getId());
                     doc.setFileName(originalFileName);
                     doc.setFileType(uploadedFile.contentType());
-                    doc.setStoragePath(filePath.toString());
-                    doc.persist();
-                    profDocs.add(doc);
-                    LOG.infof("Stored document: %s as %s for professional %s", originalFileName, newFileName, pro.email);
+                    doc.setStoragePath(storagePath);
 
-                } catch (IOException e) {
-                    LOG.error("Failed to store uploaded document: " + uploadedFile.fileName(), e);
-                    throw new RuntimeException("Failed to store document: " + uploadedFile.fileName(), e);
+                    ProfessionalDocument savedDoc = professionalDocumentRepository.save(doc); // Save doc metadata
+                    pro.getProfessionalDocumentReferences().add(savedDoc.getId()); // Add reference ID
+
+                    LOG.infof("Stored document metadata for: %s for professional %s. Storage path: %s", originalFileName, pro.getEmail(), storagePath);
+
+                } catch (Exception e) {
+                    LOG.errorf(e, "Failed to process or save metadata for uploaded document: %s", uploadedFile.fileName());
+                    // Log and continue, so one failed doc doesn't stop others or the whole registration.
+                    // Consider adding it to a list of "failed uploads" to return to the user.
                 }
             }
+            if (pro.getProfessionalDocumentReferences() != null && !pro.getProfessionalDocumentReferences().isEmpty()) { // Check if not null before isEmpty
+                pro.setUpdatedAt(java.time.LocalDateTime.now()); // Update timestamp due to document references change
+                professionalRepository.save(pro); // Re-save professional with document references
+            }
         }
-        pro.documents = profDocs;
-
         LOG.infof("Professional registered successfully: %s", pro.email);
-
         return pro;
     }
 
-    @Transactional
-    public Professional getProfessionalById(Long professionalId) {
-        Professional professional = Professional.findById(professionalId);
-        if (professional == null) {
-            LOG.warnf("Professional with ID %d not found for getProfessionalById.", professionalId);
+    public Professional getProfessionalById(String professionalId) throws ExecutionException, InterruptedException { // Changed Long to String, removed @Transactional, added throws
+        Optional<Professional> professionalOptional = professionalRepository.findById(professionalId);
+        if (professionalOptional.isEmpty()) {
+            LOG.warnf("Professional with ID %s not found for getProfessionalById.", professionalId);
             throw new NotFoundException("Professional not found with ID: " + professionalId);
         }
-        // Trigger loading for DTO if necessary, e.g. by accessing size
-        if (professional.documents != null) professional.documents.size();
-        if (professional.skills != null) professional.skills.size();
+        Professional professional = professionalOptional.get();
+
+        // Load documents
+        List<ProfessionalDocument> docs = professionalDocumentRepository.findByProfessionalId(professional.getId());
+        // For now, docs are fetched but not directly set on professional unless a transient field is added.
+        // DTOs would typically combine this data. LOG.debugf("Fetched %d documents for professional %s", docs.size(), professionalId);
+
+        // Skills are already skillNames (List<String>) in Professional entity.
+        // If full Skill objects are needed for a DTO:
+        // List<Skill> fullSkills = new ArrayList<>();
+        // if (professional.getSkillNames() != null) {
+        //     for (String skillName : professional.getSkillNames()) {
+        //         skillRepository.findByName(skillName).ifPresent(fullSkills::add);
+        //     }
+        // }
+        // LOG.debugf("Fetched %d full skill objects for professional %s", fullSkills.size(), professionalId);
+
         return professional;
     }
 
-    @Transactional
-    public Professional updateProfessionalProfile(Long professionalId, ProfessionalProfileUpdateDTO dto) {
-        Professional professional = Professional.findById(professionalId);
-        if (professional == null) {
-            LOG.warnf("Professional with ID %d not found for update.", professionalId);
+    public Professional updateProfessionalProfile(String professionalId, ProfessionalProfileUpdateDTO dto) throws ExecutionException, InterruptedException { // Changed Long to String, removed @Transactional, added throws
+        Optional<Professional> professionalOptional = professionalRepository.findById(professionalId);
+        if (professionalOptional.isEmpty()) {
+            LOG.warnf("Professional with ID %s not found for update.", professionalId);
             throw new NotFoundException("Professional not found with ID: " + professionalId);
         }
+        Professional professional = professionalOptional.get();
 
         if (dto.getName() != null) professional.setName(dto.getName());
         if (dto.getPhoneNumber() != null) professional.setPhoneNumber(dto.getPhoneNumber());
@@ -164,13 +185,12 @@ public class ProfessionalService {
         if (dto.getYearsOfExperience() != null) professional.yearsOfExperience = dto.getYearsOfExperience();
         if (dto.getAboutYou() != null) professional.aboutYou = dto.getAboutYou();
         if (dto.getSocialMediaLinks() != null) professional.socialMediaLinks = dto.getSocialMediaLinks();
-
-        if (dto.getQualifications() != null) {
-            professional.qualifications = dto.getQualifications();
-        }
-
-        professional.persist();
-        LOG.infof("Professional profile updated for ID %d.", professionalId);
+        if (dto.getQualifications() != null) professional.qualifications = dto.getQualifications();
+        // Note: Updating skills (skillNames) and documents (professionalDocumentReferences)
+        // would require more specific logic (add/remove individual items) - not covered by current DTO.
+        professional.setUpdatedAt(java.time.LocalDateTime.now());
+        professionalRepository.save(professional); // Changed from persist
+        LOG.infof("Professional profile updated for ID %s.", professionalId);
         return professional;
     }
 }

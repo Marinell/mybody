@@ -7,43 +7,43 @@ import com.fitconnect.dto.LoginResponse;
 import com.fitconnect.dto.ProfessionalRegisterRequest;
 import com.fitconnect.dto.RegisterRequest;
 import com.fitconnect.entity.*;
+import com.fitconnect.repository.ProfessionalRepository; // Added
+import com.fitconnect.repository.UserRepository;
 import io.smallrye.jwt.build.Jwt;
-import org.jboss.resteasy.reactive.multipart.FileUpload;
+import org.jboss.resteasy.reactive.multipart.FileUpload; // Keep if planning to use for other things, or remove if only for documents here
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
+// import jakarta.transaction.Transactional; // Removed
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
-import org.wildfly.security.password.PasswordFactory;
-import org.wildfly.security.password.Password;
-import org.wildfly.security.password.interfaces.BCryptPassword;
-import org.wildfly.security.password.spec.PasswordSpec;
-import org.wildfly.security.password.util.ModularCrypt;
-import org.wildfly.security.password.spec.ClearPasswordSpec;
-import org.wildfly.security.password.PasswordFactory;
-import org.wildfly.security.password.interfaces.BCryptPassword;
-import org.wildfly.security.password.util.ModularCrypt;
+// Wildfly security imports removed
 
-
-import java.security.InvalidKeyException;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
+// import java.security.InvalidKeyException; // Removed (or ensure it's still needed)
+// import java.security.NoSuchAlgorithmException; // Removed
+// import java.security.spec.InvalidKeySpecException; // Removed
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
+// import java.util.Arrays; // Removed
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ExecutionException; // Added
+import java.util.stream.Collectors; // Added
 
 @ApplicationScoped
 public class AuthService {
 
     private static final Logger LOG = Logger.getLogger(AuthService.class);
+
+    @Inject
+    UserRepository userRepository;
+
+    @Inject
+    ProfessionalRepository professionalRepository; // Added
 
     @Inject
     @ConfigProperty(name = "mp.jwt.verify.issuer")
@@ -53,158 +53,75 @@ public class AuthService {
     @ConfigProperty(name = "smallrye.jwt.sign.key.location")
     String privateKeyLocation;
 
+    // PasswordFactory and constructor removed
+    // hashPassword method removed
+    // verifyPassword method removed
 
-    private PasswordFactory passwordFactory;
-
-    public AuthService() {
-        try {
-            passwordFactory = PasswordFactory.getInstance(org.wildfly.security.password.interfaces.BCryptPassword.ALGORITHM_BCRYPT);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to initialize PasswordFactory", e);
-        }
-    }
-
-    private String hashPassword(String password) {
-        /*ClearPasswordSpec clearSpec = new ClearPasswordSpec(password.toCharArray());
-        Password newPassword = null;
-        try {
-            newPassword = passwordFactory.generatePassword(clearSpec);
-        } catch (InvalidKeySpecException e) {
-            throw new RuntimeException(e);
-        }
-        // Encode it to a string that can be stored
-        try {
-            return Arrays.toString(ModularCrypt.encode(newPassword));
-        } catch (InvalidKeySpecException e) {
-            throw new RuntimeException(e);
-        }*/
-
-        PasswordFactory passwordFactory = null;
-        try {
-            passwordFactory = PasswordFactory.getInstance(BCryptPassword.ALGORITHM_BCRYPT);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-        ClearPasswordSpec passwordSpec = new ClearPasswordSpec(password.toCharArray());
-        BCryptPassword bCryptPassword = null;
-        try {
-            bCryptPassword = (BCryptPassword) passwordFactory.generatePassword(passwordSpec);
-        } catch (InvalidKeySpecException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            return Arrays.toString(ModularCrypt.encode(bCryptPassword));
-        } catch (InvalidKeySpecException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private boolean verifyPassword(String plainPassword, String hashedPassword) {
-        /*Password storedPassword = null;
-        try {
-            storedPassword = ModularCrypt.decode(hashedPassword);
-        } catch (InvalidKeySpecException e) {
-            throw new RuntimeException(e);
-        }
-        // Verify the plain password against the stored hashed password
-        try {
-            return passwordFactory.verify(storedPassword, plainPassword.toCharArray());
-        } catch (InvalidKeyException e) {
-            throw new RuntimeException(e);
-        }*/
-        PasswordFactory verificationFactory = null;
-        try {
-            verificationFactory = PasswordFactory.getInstance(BCryptPassword.ALGORITHM_BCRYPT);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-        Password decodedPassword = null;
-        try {
-            decodedPassword = ModularCrypt.decode(hashedPassword);
-        } catch (InvalidKeySpecException e) {
-            throw new RuntimeException(e);
-        }
-
-        Password restoredPassword = null;
-        try {
-            restoredPassword = verificationFactory.translate(decodedPassword);
-        } catch (InvalidKeyException e) {
-            throw new RuntimeException(e);
-        }
-
-        try {
-            return passwordFactory.verify(restoredPassword, plainPassword.toCharArray());
-        } catch (InvalidKeyException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Transactional
-    public User registerClient(RegisterRequest request) {
-        if (User.find("email", request.getEmail()).firstResultOptional().isPresent()) {
+    /*
+    public User registerClient(RegisterRequest request) throws ExecutionException, InterruptedException {
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new IllegalArgumentException("Email already exists");
         }
         Client client = new Client();
         client.setName(request.getName());
         client.setEmail(request.getEmail());
-        client.setPassword(hashPassword(request.getPassword()));
         client.setPhoneNumber(request.getPhoneNumber());
-        client.persist();
+        userRepository.save(client);
         return client;
     }
 
-    @Transactional
-    public Optional<LoginResponse> login(LoginRequest request) {
-        Optional<User> userOptional = User.find("email", request.getEmail()).firstResultOptional();
+    public Optional<LoginResponse> login(LoginRequest request) throws ExecutionException, InterruptedException {
+        Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
         LOG.infof("searching user: " + request.getEmail());
         if (userOptional.isPresent()) {
             LOG.infof("user found");
             User user = userOptional.get();
-            if (true/*verifyPassword(request.getPassword(), user.getPassword())*/) {
-                Set<String> roles = new HashSet<>();
-                roles.add(user.getRole().name());
 
-                String token = Jwt.issuer(jwtIssuer)
-                                  .upn(user.getEmail()) // User Principal Name
-                                  .subject(user.getId().toString()) // Subject, typically user ID
-                                  .groups(roles) // User roles/groups
-                                  .expiresIn(Duration.ofHours(1))
-                                  .sign(); // Sign with the private key configured
+            Set<String> roles = new HashSet<>();
+            roles.add(user.getRole().name());
 
-                String profileStatus = null;
-                if (user.getRole() == UserRole.PROFESSIONAL) {
-                    // It's generally safer to fetch the Professional entity fresh to ensure all fields are loaded
-                    Professional professional = Professional.findById(user.getId());
-                    if (professional != null && professional.getProfileStatus() != null) {
+            // This JWT generation is for client-side, but with Firebase Auth, client gets token from Firebase.
+            // Backend might issue its own token session or just rely on Firebase token verification per request.
+            // For now, let's assume this was for the old system and can be removed for initializeUser flow.
+            // String token = Jwt.issuer(jwtIssuer)
+            //                   .upn(user.getEmail())
+            //                   .subject(user.getId())
+            //                   .groups(roles)
+            //                   .expiresIn(Duration.ofHours(1))
+            //                   .sign();
+
+            String profileStatus = null;
+            if (user.getRole() == UserRole.PROFESSIONAL) {
+                Optional<Professional> professionalOptional = professionalRepository.findById(user.getId());
+                if (professionalOptional.isPresent()) {
+                    Professional professional = professionalOptional.get();
+                    if (professional.getProfileStatus() != null) {
                         profileStatus = professional.getProfileStatus().name();
-                    } else if (professional != null) {
-                        // If professional exists but status is null, perhaps default or log
-                        profileStatus = ProfileStatus.PENDING_VERIFICATION.name(); // Default if status is unexpectedly null
                     } else {
-                        // Log if professional record not found for a user with PROFESSIONAL role
-                        LOG.warnf("Professional record not found for user ID: %d, who has PROFESSIONAL role.", user.getId());
-                        profileStatus = ProfileStatus.PENDING_VERIFICATION.name(); // Or some other default/error status
+                        profileStatus = ProfileStatus.PENDING_VERIFICATION.name();
                     }
                 } else {
-                    profileStatus = "N/A"; // Or null, depending on how frontend handles it
+                    LOG.warnf("Professional record not found in professionals collection for user ID: %s, who has PROFESSIONAL role.", user.getId());
+                    profileStatus = ProfileStatus.PENDING_VERIFICATION.name();
                 }
-                return Optional.of(new LoginResponse(token, user.getId(), user.getEmail(), user.getRole().name(), profileStatus));
+            } else {
+                profileStatus = "N/A";
             }
+            // Return LoginResponse without a new token, as client already has Firebase token
+            return Optional.of(new LoginResponse(null, user.getId(), user.getEmail(), user.getRole().name(), profileStatus));
         }
         LOG.infof("user NOT found");
         return Optional.empty();
     }
 
-    @Transactional
-    public Professional registerProfessional(ProfessionalRegisterRequest request) {
-        if (User.find("email", request.getEmail()).firstResultOptional().isPresent()) {
+    public Professional registerProfessional(ProfessionalRegisterRequest request) throws ExecutionException, InterruptedException {
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new IllegalArgumentException("Email already exists");
         }
 
         Professional professional = new Professional();
         professional.setName(request.getName());
         professional.setEmail(request.getEmail());
-        professional.setPassword(hashPassword(request.getPassword()));
         professional.setPhoneNumber(request.getPhoneNumber());
         professional.setProfession(request.getProfession());
         professional.setAddress(request.getAddress());
@@ -220,37 +137,62 @@ public class AuthService {
                 professional.setSocialMediaLinks(socialMediaLinks);
             } catch (JsonProcessingException e) {
                 LOG.error("Error parsing social media links JSON", e);
-                // Depending on requirements, you might want to let the registration fail
-                // or proceed without social media links. For now, re-throwing as a runtime exception.
                 throw new RuntimeException("Invalid social media links format", e);
-            }
-        }
-
-        if (request.getDocuments() != null) {
-            if (professional.getDocuments() == null) {
-                professional.setDocuments(new ArrayList<>());
-            }
-            for (FileUpload documentUpload : request.getDocuments()) {
-                try {
-                    ProfessionalDocument document = new ProfessionalDocument();
-                    document.setProfessional(professional);
-                    document.setFileName(documentUpload.fileName());
-                    document.setFileType(documentUpload.contentType());
-                    document.setFileContent(Files.readAllBytes(documentUpload.uploadedFile()));
-                    professional.getDocuments().add(document);
-                } catch (IOException e) {
-                    LOG.error("Error reading uploaded document: " + documentUpload.fileName(), e);
-                    // Decide on error handling: skip this file, fail the registration, etc.
-                    // For now, re-throwing as a runtime exception to indicate failure.
-                    throw new RuntimeException("Error processing uploaded document: " + documentUpload.fileName(), e);
-                }
             }
         }
 
         professional.setRole(UserRole.PROFESSIONAL);
         professional.setProfileStatus(ProfileStatus.PENDING_VERIFICATION);
 
-        professional.persist();
+        User savedUserPortion = userRepository.save(professional);
+        professional.setId(savedUserPortion.getId());
+        professionalRepository.save(professional);
+
         return professional;
+    }
+    */
+
+    public LoginResponse initializeUser(String uid, String email) throws ExecutionException, InterruptedException {
+        Optional<User> userOptional = userRepository.findById(uid);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            LOG.infof("User %s (UID: %s) already exists. Returning existing user data.", email, uid);
+            String profileStatus = "N/A";
+            if (user.getRole() == UserRole.PROFESSIONAL) {
+                Professional prof = professionalRepository.findById(uid)
+                                        .orElseGet(() -> {
+                                            // This case should ideally not happen if role is PROFESSIONAL
+                                            // but user data is somehow missing in professionals collection.
+                                            LOG.warnf("User UID %s has role PROFESSIONAL but no entry in professionals collection. Creating one.", uid);
+                                            Professional newProf = new Professional();
+                                            newProf.setId(uid);
+                                            newProf.setEmail(email);
+                                            newProf.setName(user.getName()); // Or a default name
+                                            newProf.setRole(UserRole.PROFESSIONAL);
+                                            newProf.setProfileStatus(ProfileStatus.PENDING_VERIFICATION);
+                                            try {
+                                                professionalRepository.save(newProf);
+                                            } catch (ExecutionException | InterruptedException e) {
+                                                LOG.error("Failed to save new professional stub", e);
+                                                //Thread.currentThread().interrupt(); // Restore interrupt status
+                                            }
+                                            return newProf;
+                                        });
+                profileStatus = prof.getProfileStatus() != null ? prof.getProfileStatus().name() : ProfileStatus.PENDING_VERIFICATION.name();
+            }
+             // No new JWT token is issued here from backend; client uses Firebase ID token
+            return new LoginResponse(null, uid, email, user.getRole().name(), profileStatus);
+        } else {
+            LOG.infof("User %s (UID: %s) not found. Creating new CLIENT user.", email, uid);
+            User newUser = new User(); // Using User, not Client, as Client constructor sets role.
+            newUser.setId(uid);
+            newUser.setEmail(email);
+            newUser.setRole(UserRole.CLIENT); // Default role for new users
+            // Name can be set later via a profile update endpoint if not available from token
+            // newUser.setName(displayNameFromTokenIfNotAvailableInEmail);
+            userRepository.save(newUser);
+             // No new JWT token is issued here
+            return new LoginResponse(null, uid, email, UserRole.CLIENT.name(), "N/A");
+        }
     }
 }
