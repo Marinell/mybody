@@ -20,6 +20,15 @@ export const AuthProvider = ({ children }) => {
     const [isAuthLoading, setIsAuthLoading] = useState(true);
     const navigate = useNavigate();
 
+    const updateUserProfileStatus = (newStatus) => {
+      setCurrentUser(prevUser => {
+        if (!prevUser) return null; // Should not happen if a user is logged in
+        const updatedUser = { ...prevUser, profileStatus: newStatus };
+        storeUserInfo(updatedUser); // storeUserInfo is the renamed saveUserInfo
+        return updatedUser;
+      });
+    };
+
     useEffect(() => {
         // Initial check on component mount
         const storedUser = getStoredUserInfo();
@@ -97,7 +106,8 @@ export const AuthProvider = ({ children }) => {
         login,
         signup,
         logout: logoutUser,
-        isAuthLoading
+        isAuthLoading,
+        updateUserProfileStatus // Add the new function here
     };
 
     // Render children only after initial auth state is determined (optional, but good for UX)

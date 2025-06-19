@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { apiClient, getUserInfo, logout } from '../services/app';
 import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext'; // Add this
 
 const ProfessionalProfileVerificationPage = () => {
   const [verificationStatus, setVerificationStatus] = useState('');
@@ -16,6 +17,7 @@ const ProfessionalProfileVerificationPage = () => {
 
   const navigate = useNavigate();
   const userInfo = getUserInfo();
+  const { updateUserProfileStatus } = useAuth(); // Destructure the new function
 
 // SVG Icon Definitions
 const PENDING_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="status-icon pending-icon"><path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"></path><path d="M13 7h-2v5.414l3.293 3.293 1.414-1.414L13 10.586V7z"></path></svg>';
@@ -33,7 +35,10 @@ const DEFAULT_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24
     const fetchStatus = async () => {
       try {
         const data = await apiClient('/professionals/me/status');
-        setVerificationStatus(data.status);
+        setVerificationStatus(data.status); // Local state update
+        if (updateUserProfileStatus) { // Ensure the function is available
+            updateUserProfileStatus(data.status); // Global auth context update
+        }
         updateUIBasedOnStatus(data.status);
       } catch (error) {
         setStatusMessage(error.data?.message || error.message || 'Could not retrieve profile status.');
@@ -44,7 +49,7 @@ const DEFAULT_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24
       }
     };
     fetchStatus();
-  }, [navigate, userInfo]); // userInfo added as dependency
+  }, [navigate, userInfo?.role]); // userInfo added as dependency
 
   const updateUIBasedOnStatus = (status) => {
     switch (status) {
