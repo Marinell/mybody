@@ -1,5 +1,8 @@
 package com.fitconnect.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import java.util.List;
@@ -12,12 +15,14 @@ import lombok.Setter;
 @Table(name = "clients")
 @Getter
 @Setter
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Client extends User {
 
     // Client-specific attributes can be added here if any in the future
     // For now, it inherits all from User and is distinguished by UserRole.CLIENT
 
     @OneToMany(mappedBy = "client")
+    @JsonIgnore
     public List<ServiceRequest> serviceRequests;
 
     public Client() {
