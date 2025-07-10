@@ -1,5 +1,6 @@
 package com.fitconnect.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import java.util.List;
@@ -18,6 +19,7 @@ public class Client extends User {
     // For now, it inherits all from User and is distinguished by UserRole.CLIENT
 
     @OneToMany(mappedBy = "client")
+    @JsonIgnore
     public List<ServiceRequest> serviceRequests;
 
     public Client() {
